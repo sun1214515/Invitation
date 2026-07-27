@@ -622,8 +622,7 @@
         <div class="invite-card" id="card3d">
           <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时</div><div class="info-value">2026年10月3日（周六）<br>农历 八月廿三 12:08</div></div></div>
           <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">新化县上梅街道 · 棘树下</div></div></div>
-          <button class="nav-btn" id="navBtn">🧭 导航赴宴</button>
-          <div style="margin-top:14px;text-align:center;font-size:11px;color:rgba(255,209,220,0.4);">点击选择地图APP</div>
+          <button class="nav-btn" id="navBtn" onclick="openTencentMap()">🧭 导航赴宴</button>
         </div>
       </div>
     </section>
@@ -632,13 +631,11 @@
   <!-- 地图弹窗 -->
   <div class="modal-overlay" id="mapModal">
     <div class="modal-box">
-      <div class="modal-title">选择导航方式</div>
-      <div class="map-option recommend" id="mapTencent"><span class="icon">💬</span> 腾讯地图（推荐）</div>
-      <div class="map-option" id="mapAmap"><span class="icon">🗺️</span> 高德地图</div>
-      <div class="map-option" id="mapBaidu"><span class="icon">🐾</span> 百度地图</div>
-      <div class="map-option" id="mapApple"><span class="icon">🍎</span> 苹果地图 (iOS)</div>
-      <div class="map-option copy-addr" id="copyAddress"><span class="icon">📋</span> 复制地址（粘贴到地图）</div>
-      <button class="cancel-map" id="closeMapModal">取消</button>
+      <div class="modal-title">正在跳转腾讯地图...</div>
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:40px;margin-bottom:10px;">🗺️</div>
+        <div style="color:#666;font-size:14px;">即将打开腾讯地图导航</div>
+      </div>
     </div>
   </div>
 
@@ -1031,57 +1028,35 @@
       if (e.target === mapModal) mapModal.classList.remove('active');
     });
 
-    // 地址信息（请替换）
+    // 地址信息
     const LAT = 27.721203;
     const LNG = 111.247284;
     const NAME = '棘树下';
     const FULL_ADDR = '新化县上梅街道 · 棘树下';
 
-    // 改用 location.href 直接跳转，避免微信拦截
-    function openMap(url) {
-      window.location.href = url;
-      mapModal.classList.remove('active');
+    // 直接跳转腾讯地图
+    function openTencentMap() {
+      // 显示跳转提示
+      const mapModal = document.getElementById('mapModal');
+      mapModal.classList.add('active');
+      
+      // 1秒后跳转
+      setTimeout(() => {
+        const url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(NAME)}&tocoord=${LAT},${LNG}&referer=Wedding`;
+        window.location.href = url;
+        
+        // 3秒后关闭提示（如果还在当前页面）
+        setTimeout(() => {
+          mapModal.classList.remove('active');
+        }, 3000);
+      }, 800);
     }
 
-    document.getElementById('mapTencent').addEventListener('click', function() {
-      openMap(`https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(NAME)}&tocoord=${LAT},${LNG}&referer=Wedding`);
+    // 绑定按钮点击事件
+    document.getElementById('navBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      openTencentMap();
     });
-    document.getElementById('mapAmap').addEventListener('click', function() {
-      openMap(`https://uri.amap.com/navigation?to=${LNG},${LAT},${encodeURIComponent(NAME)}&mode=car&coordinate=gaode&callnative=1`);
-    });
-    document.getElementById('mapBaidu').addEventListener('click', function() {
-      openMap(`https://api.map.baidu.com/direction?destination=latlng:${LAT},${LNG}|name:${encodeURIComponent(NAME)}&mode=driving&output=html`);
-    });
-    document.getElementById('mapApple').addEventListener('click', function() {
-      openMap(`http://maps.apple.com/?ll=${LAT},${LNG}&q=${encodeURIComponent(NAME)}`);
-    });
-
-    // 复制地址
-    document.getElementById('copyAddress').addEventListener('click', function() {
-      const text = `${NAME}, ${FULL_ADDR}`;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast('✅ 地址已复制，请打开地图APP粘贴搜索');
-        }).catch(() => { fallbackCopy(text); });
-      } else {
-        fallbackCopy(text);
-      }
-      mapModal.classList.remove('active');
-    });
-
-    function fallbackCopy(text) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        showToast('✅ 地址已复制，请打开地图APP粘贴搜索');
-      } catch (e) {
-        showToast('❌ 复制失败，请手动复制地址');
-      }
-      document.body.removeChild(textarea);
-    }
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
