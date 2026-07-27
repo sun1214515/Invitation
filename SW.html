@@ -45,12 +45,8 @@
       pointer-events: none;
     }
     @keyframes spinBg {
-      100% {
-        transform: rotate(360deg);
-      }
+      100% { transform: rotate(360deg); }
     }
-
-    /* 浮动光晕（粉金） */
     .glow-ball {
       position: fixed;
       border-radius: 50%;
@@ -77,15 +73,11 @@
       animation-delay: 4s;
     }
     @keyframes floatGlow {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-      100% {
-        transform: translate(30px, 40px) scale(1.2);
-      }
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 40px) scale(1.2); }
     }
 
-    /* ===== 科技感粒子 Canvas ===== */
+    /* ===== 粒子 Canvas ===== */
     #particles {
       position: fixed;
       top: 0;
@@ -105,7 +97,7 @@
       transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
-    /* ===== 页面（支持内部滚动） ===== */
+    /* ===== 页面 ===== */
     .page {
       width: 100%;
       display: flex;
@@ -120,9 +112,7 @@
       background: transparent;
       position: relative;
     }
-    .page::-webkit-scrollbar {
-      display: none;
-    }
+    .page::-webkit-scrollbar { display: none; }
     .page-content {
       width: 100%;
       max-width: 420px;
@@ -133,7 +123,6 @@
       min-height: calc(100% + 20px);
     }
 
-    /* ===== 标题组件（粉金渐变 + 发光） ===== */
     .section-title {
       font-size: 28px;
       font-weight: 700;
@@ -153,7 +142,7 @@
       margin-bottom: 20px;
     }
 
-    /* ===== 第1页：封面（3D卡片视差） ===== */
+    /* ===== 第1页：封面 ===== */
     .cover-wrapper {
       display: flex;
       flex-direction: column;
@@ -218,9 +207,7 @@
       line-height: 1.3;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    .name-card .cn.span-2 {
-      letter-spacing: 10px;
-    }
+    .name-card .cn.span-2 { letter-spacing: 10px; }
     .name-card .en {
       font-size: 10px;
       color: rgba(90, 45, 58, 0.4);
@@ -236,14 +223,8 @@
       padding: 0 5px;
     }
     @keyframes pulseGold {
-      0% {
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-        transform: scale(1);
-      }
-      100% {
-        text-shadow: 0 0 50px rgba(212, 175, 55, 0.5), 0 0 100px rgba(217, 33, 33, 0.2);
-        transform: scale(1.06);
-      }
+      0% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.2); transform: scale(1); }
+      100% { text-shadow: 0 0 50px rgba(212, 175, 55, 0.5), 0 0 100px rgba(217, 33, 33, 0.2); transform: scale(1.06); }
     }
     .cover-date {
       font-size: 16px;
@@ -281,13 +262,8 @@
       50% { transform: translateX(-50%) translateY(6px); }
     }
 
-    /* ============================================================
-       第2页：时光长卷（流光+波纹+水印）
-       ============================================================ */
-    .timeline-wrapper {
-      width: 100%;
-      position: relative;
-    }
+    /* ===== 第2页：时光长卷 ===== */
+    .timeline-wrapper { width: 100%; position: relative; }
     .timeline {
       width: 100%;
       max-width: 340px;
@@ -393,26 +369,75 @@
       100% { transform: translateY(-20px) rotate(15deg); opacity: 0.25; }
     }
 
+    /* ===== 第3页：9宫格 ===== */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .photo-item {
+      aspect-ratio: 1/1;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 25px rgba(139, 0, 0, 0.06);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+    }
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: transform 0.6s ease;
+    }
+    .photo-item:hover img { transform: scale(1.06); }
+    .photo-item::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.15) 50%, transparent 60%);
+      animation: shimmer 5s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+
     /* ============================================================
-       第3页：鎏金岁月（横向滚动画廊）
+       第4页：横向画廊 —— 增加左右箭头按钮
        ============================================================ */
-    .gallery-track {
+    .gallery-wrapper {
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+    }
+    .gallery-track-4 {
       display: flex;
       gap: 15px;
-      width: 100%;
       overflow-x: auto;
-      padding: 10px 0 20px;
+      padding: 10px 0 25px;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-x;
       scroll-behavior: smooth;
+      overscroll-behavior: contain;
+      cursor: grab;
+      scrollbar-width: none;
     }
-    .gallery-track::-webkit-scrollbar {
-      display: none;
-    }
-    .gallery-item {
-      flex: 0 0 240px;
-      height: 320px;
+    .gallery-track-4::-webkit-scrollbar { display: none; }
+    .gallery-track-4 .gallery-item {
+      flex: 0 0 220px;
+      height: 300px;
       background: rgba(255, 255, 255, 0.4);
       backdrop-filter: blur(8px);
       border-radius: 16px;
@@ -422,18 +447,19 @@
       box-shadow: 0 15px 35px rgba(139, 0, 0, 0.08);
       overflow: hidden;
       position: relative;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
+      user-select: none;
+      -webkit-user-select: none;
     }
-    .gallery-item:active {
-      transform: scale(0.97);
-    }
-    .gallery-item img {
+    .gallery-track-4 .gallery-item:active { transform: scale(0.97); }
+    .gallery-track-4 .gallery-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 10px;
+      pointer-events: none;
     }
-    .gallery-item .tag {
+    .gallery-track-4 .gallery-item .tag {
       position: absolute;
       bottom: 18px;
       left: 18px;
@@ -445,28 +471,70 @@
       color: #d92121;
       font-weight: 600;
       border: 1px solid rgba(255, 255, 255, 0.9);
+      pointer-events: none;
     }
 
-    /* ============================================================
-       第4页：光影长情 —— 横向滑动（修正！）
-       ============================================================ */
-    .gallery-track-4 {
+    /* 左右箭头按钮（透明，粉金点缀） */
+    .arrow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       display: flex;
-      gap: 15px;
-      width: 100%;
-      overflow-x: auto;
-      padding: 10px 0 20px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x;
-      scroll-behavior: smooth;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #d92121;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      user-select: none;
+      -webkit-user-select: none;
     }
-    .gallery-track-4::-webkit-scrollbar {
-      display: none;
+    .arrow-btn:active {
+      transform: translateY(-50%) scale(0.9);
+      background: rgba(255, 255, 255, 0.5);
     }
-    .gallery-track-4 .gallery-item {
-      flex: 0 0 220px;
-      height: 300px;
+    .arrow-btn.left {
+      left: -6px;
+    }
+    .arrow-btn.right {
+      right: -6px;
+    }
+    /* 在小屏设备上稍微内缩 */
+    @media (max-width: 400px) {
+      .arrow-btn.left { left: 2px; }
+      .arrow-btn.right { right: 2px; }
+    }
+
+    /* 滚动指示器（小圆点） */
+    .scroll-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: -10px;
+      padding-bottom: 10px;
+    }
+    .scroll-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(90, 45, 58, 0.2);
+      transition: all 0.3s;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .scroll-dots span.active {
+      background: #d92121;
+      box-shadow: 0 0 12px rgba(217, 33, 33, 0.4);
+      transform: scale(1.4);
     }
 
     /* ===== 第5页：邀请卡 ===== */
@@ -544,10 +612,7 @@
       animation: shimmer 3s infinite;
       pointer-events: none;
     }
-    .nav-btn:active {
-      transform: scale(0.96);
-      filter: brightness(1.1);
-    }
+    .nav-btn:active { transform: scale(0.96); filter: brightness(1.1); }
     @keyframes shimmer {
       0% { transform: translateX(-100%) translateY(-100%); }
       100% { transform: translateX(100%) translateY(100%); }
@@ -602,9 +667,7 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    .auto-btn:active {
-      transform: scale(0.9);
-    }
+    .auto-btn:active { transform: scale(0.9); }
 
     /* ===== 地图选择弹窗 ===== */
     .modal-overlay {
@@ -640,9 +703,7 @@
       transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .modal-overlay.active .modal-box {
-      transform: translateY(0);
-    }
+    .modal-overlay.active .modal-box { transform: translateY(0); }
     .modal-title {
       text-align: center;
       font-size: 18px;
@@ -682,8 +743,10 @@
       color: #fff;
       border: none;
     }
-    .map-option.recommend .icon {
-      color: #fff;
+    .map-option.recommend .icon { color: #fff; }
+    .map-option.copy-addr {
+      border-style: dashed;
+      background: rgba(255,255,255,0.3);
     }
     .cancel-map {
       display: block;
@@ -696,6 +759,24 @@
       margin-top: 10px;
       cursor: pointer;
       text-align: center;
+    }
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
     }
   </style>
 </head>
@@ -720,6 +801,9 @@
 
   <!-- 自动播放按钮 -->
   <div class="auto-btn" id="autoBtn">⏸</div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
   <!-- ===== 主应用 ===== -->
   <div id="app">
@@ -781,48 +865,61 @@
       </div>
     </section>
 
-    <!-- 第3页：鎏金岁月（横向） -->
+    <!-- 第3页：9宫格 -->
     <section class="page" id="page2">
       <div class="page-content">
         <div class="section-title">鎏金岁月</div>
         <div class="section-sub">SWEET MOMENTS</div>
-        <div class="gallery-track">
-          <div class="gallery-item"><img src="https://picsum.photos/seed/a1/400/500" alt=""><div class="tag">📸 心动瞬间</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/a2/400/500" alt=""><div class="tag">🌹 浪漫时刻</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/a3/400/500" alt=""><div class="tag">💫 星光约定</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/a4/400/500" alt=""><div class="tag">🍾 庆祝瞬间</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/a5/400/500" alt=""><div class="tag">💕 甜蜜日常</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/a6/400/500" alt=""><div class="tag">✨ 永恒记忆</div></div>
+        <div class="photo-grid">
+          <div class="photo-item"><img src="https://picsum.photos/seed/a1/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a2/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a3/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a4/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a5/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a6/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a7/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a8/200/200" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/seed/a9/200/200" alt=""></div>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-    第4页：光影长情 —— 横向滑动（修正！）
+    第4页：光影长情 —— 添加左右透明箭头
     ============================================================ -->
     <section class="page" id="page3">
       <div class="page-content">
         <div class="section-title">光影长情</div>
         <div class="section-sub">GALLERY</div>
-        <div class="gallery-track-4">
-          <div class="gallery-item"><img src="https://picsum.photos/seed/b1/300/400" alt=""><div class="tag">📸 定格·婚纱</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/b2/300/400" alt=""><div class="tag">🌍 足迹·世界</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/b3/300/400" alt=""><div class="tag">☕ 日常·烟火</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/b4/300/400" alt=""><div class="tag">💍 承诺·戒指</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/b5/300/400" alt=""><div class="tag">🎬 电影感</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/seed/b6/300/400" alt=""><div class="tag">✨ 闪耀时刻</div></div>
+        <div class="gallery-wrapper">
+          <!-- 左箭头 -->
+          <div class="arrow-btn left" id="arrowLeft">‹</div>
+          <!-- 右箭头 -->
+          <div class="arrow-btn right" id="arrowRight">›</div>
+
+          <div class="gallery-track-4" id="galleryTrack">
+            <div class="gallery-item"><img src="https://picsum.photos/seed/b1/300/400" alt=""><div class="tag">📸 定格·婚纱</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/seed/b2/300/400" alt=""><div class="tag">🌍 足迹·世界</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/seed/b3/300/400" alt=""><div class="tag">☕ 日常·烟火</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/seed/b4/300/400" alt=""><div class="tag">💍 承诺·戒指</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/seed/b5/300/400" alt=""><div class="tag">🎬 电影感</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/seed/b6/300/400" alt=""><div class="tag">✨ 闪耀时刻</div></div>
+          </div>
+
+          <!-- 滚动指示器 -->
+          <div class="scroll-dots" id="scrollDots"></div>
         </div>
       </div>
     </section>
 
-    <!-- 第5页：喜宴坐标 -->
+    <!-- 第5页 -->
     <section class="page" id="page4">
       <div class="page-content" style="padding-bottom:60px;">
         <div class="section-title">喜宴坐标</div>
         <div class="section-sub">INVITATION</div>
         <div class="invite-card" id="card3d">
-          <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时</div><div class="info-value">2026年10月3日（周六）<br>农历 八月廿三 12:08</div></div></div>
-          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">新化县上梅街道 · 棘树下</div></div></div>
+          <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时</div><div class="info-value">2026年10月3日（周六）<br>农历 八月廿二 18:08</div></div></div>
+          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">杭州市西湖区 · 瑰丽酒店<br>三层 玫瑰宴会厅</div></div></div>
           <button class="nav-btn" id="navBtn">🧭 导航赴宴</button>
           <div style="margin-top:14px;text-align:center;font-size:11px;color:rgba(90,45,58,0.3);">点击选择地图APP</div>
         </div>
@@ -833,7 +930,7 @@
   <!-- ===== 地图选择弹窗 ===== -->
   <div class="modal-overlay" id="mapModal">
     <div class="modal-box">
-      <div class="modal-title">选择导航地图</div>
+      <div class="modal-title">选择导航方式</div>
       <div class="map-option recommend" id="mapTencent">
         <span class="icon">💬</span> 腾讯地图（推荐）
       </div>
@@ -845,6 +942,9 @@
       </div>
       <div class="map-option" id="mapApple">
         <span class="icon">🍎</span> 苹果地图 (iOS)
+      </div>
+      <div class="map-option copy-addr" id="copyAddress">
+        <span class="icon">📋</span> 复制地址（粘贴到地图）
       </div>
       <button class="cancel-map" id="closeMapModal">取消</button>
     </div>
@@ -898,7 +998,6 @@
           ctx.shadowBlur = 0;
         }
       }
-
       for (let i = 0; i < COUNT; i++) particles.push(new Particle());
 
       function drawLines() {
@@ -909,8 +1008,8 @@
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 110) {
               ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[j].x);
-              ctx.lineTo(particles[i].y, particles[j].y);
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
               ctx.strokeStyle = `rgba(212, 175, 55, ${0.06 * (1 - dist / 110)})`;
               ctx.lineWidth = 0.6;
               ctx.stroke();
@@ -918,7 +1017,6 @@
           }
         }
       }
-
       function animate() {
         ctx.clearRect(0, 0, w, h);
         particles.forEach(p => { p.update(); p.draw(); });
@@ -948,30 +1046,24 @@
         element.style.transform =
           `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
       }
-
       function resetTilt(element) {
         if (!element) return;
         element.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
       }
-
       document.addEventListener('mousemove', (e) => {
-        const x = e.clientX,
-          y = e.clientY;
+        const x = e.clientX, y = e.clientY;
         applyTilt(cover, x, y);
         applyTilt(card3d, x, y);
         cards.forEach(c => applyTilt(c, x, y));
       });
-
       document.addEventListener('touchmove', (e) => {
         if (e.touches.length > 0) {
-          const x = e.touches[0].clientX,
-            y = e.touches[0].clientY;
+          const x = e.touches[0].clientX, y = e.touches[0].clientY;
           applyTilt(cover, x, y);
           applyTilt(card3d, x, y);
           cards.forEach(c => applyTilt(c, x, y));
         }
       }, { passive: true });
-
       document.addEventListener('mouseleave', () => {
         resetTilt(cover);
         resetTilt(card3d);
@@ -991,7 +1083,6 @@
     let isSwiping = false;
 
     function getScreenHeight() { return window.innerHeight; }
-
     function initLayout() {
       const h = getScreenHeight();
       app.style.height = (h * pages.length) + 'px';
@@ -1035,7 +1126,6 @@
         app.style.transition = 'none';
       }
     }
-
     function onTouchMove(e) {
       if (isAnimating || !isSwiping) return;
       const touch = e.touches[0];
@@ -1060,7 +1150,6 @@
       const translateY = -currentIndex * getScreenHeight() + finalDiff;
       app.style.transform = `translate3d(0, ${translateY}px, 0)`;
     }
-
     function onTouchEnd(e) {
       if (isAnimating || !isSwiping) return;
       const touch = e.changedTouches[0];
@@ -1071,14 +1160,12 @@
       else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
       goToPage(nextPage, true);
     }
-
     app.addEventListener('touchstart', onTouchStart, { passive: false });
     app.addEventListener('touchmove', onTouchMove, { passive: false });
     app.addEventListener('touchend', onTouchEnd, { passive: true });
 
     // 鼠标支持
-    let mouseDown = false,
-      mouseStartY = 0;
+    let mouseDown = false, mouseStartY = 0;
     app.addEventListener('mousedown', (e) => {
       if (isAnimating) return;
       mouseDown = true;
@@ -1112,8 +1199,7 @@
       goToPage(nextPage, true);
     });
     app.addEventListener('mouseleave', () => {
-      if (mouseDown) { mouseDown = false;
-        goToPage(currentIndex, true); }
+      if (mouseDown) { mouseDown = false; goToPage(currentIndex, true); }
     });
 
     dots.forEach(dot => {
@@ -1142,13 +1228,11 @@
         else pauseAuto();
       }, AUTO_INTERVAL);
     }
-
     function pauseAuto() {
       isAutoPlaying = false;
       autoBtn.textContent = '▶';
       clearInterval(autoTimer);
     }
-
     autoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       isAutoPlaying ? pauseAuto() : startAuto();
@@ -1156,7 +1240,80 @@
     startAuto();
 
     // ============================================================
-    // 5. 导航弹窗（解决微信内无法系统选择的问题）
+    // 5. 第四页横向滚动 + 箭头控制 + 指示器
+    // ============================================================
+    (function() {
+      const track = document.getElementById('galleryTrack');
+      const dotsContainer = document.getElementById('scrollDots');
+      const items = track.querySelectorAll('.gallery-item');
+      const total = items.length;
+
+      // 生成指示器小圆点
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        if (i === 0) dot.classList.add('active');
+        dotsContainer.appendChild(dot);
+      }
+      const dotElements = dotsContainer.querySelectorAll('span');
+
+      // 更新指示器高亮
+      function updateDots() {
+        const scrollLeft = track.scrollLeft;
+        const itemWidth = items[0].offsetWidth + 15;
+        const index = Math.round(scrollLeft / itemWidth);
+        dotElements.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      }
+
+      track.addEventListener('scroll', updateDots);
+
+      // 点击指示器跳转
+      dotElements.forEach((dot, i) => {
+        dot.addEventListener('click', function() {
+          const itemWidth = items[0].offsetWidth + 15;
+          track.scrollTo({ left: i * itemWidth, behavior: 'smooth' });
+        });
+      });
+
+      // 左右箭头点击事件
+      const arrowLeft = document.getElementById('arrowLeft');
+      const arrowRight = document.getElementById('arrowRight');
+
+      function scrollBy(direction) {
+        const itemWidth = items[0].offsetWidth + 15;
+        const currentScroll = track.scrollLeft;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        let target = currentScroll + direction * itemWidth;
+        if (target < 0) target = 0;
+        if (target > maxScroll) target = maxScroll;
+        track.scrollTo({ left: target, behavior: 'smooth' });
+      }
+
+      arrowLeft.addEventListener('click', (e) => {
+        e.stopPropagation();
+        scrollBy(-1);
+        pauseAuto(); // 用户操作时暂停自动播放
+      });
+      arrowRight.addEventListener('click', (e) => {
+        e.stopPropagation();
+        scrollBy(1);
+        pauseAuto();
+      });
+
+      // 当滚动停止后更新指示器（防抖）
+      let scrollTimeout;
+      track.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateDots, 150);
+      });
+
+      // 窗口大小改变时重新计算（保证指示器准确）
+      window.addEventListener('resize', updateDots);
+    })();
+
+    // ============================================================
+    // 6. 导航弹窗
     // ============================================================
     const navBtn = document.getElementById('navBtn');
     const mapModal = document.getElementById('mapModal');
@@ -1173,10 +1330,10 @@
       if (e.target === mapModal) mapModal.classList.remove('active');
     });
 
-    // 定义坐标和名称
     const LAT = 27.721203;
     const LNG = 111.247284;
     const NAME = '棘树下';
+    const FULL_ADDR = '新化县上梅街道 · 棘树下';
 
     function openMap(url) {
       window.open(url, '_blank');
@@ -1195,7 +1352,44 @@
     document.getElementById('mapApple').addEventListener('click', () => {
       openMap(`http://maps.apple.com/?ll=${LAT},${LNG}&q=${encodeURIComponent(NAME)}`);
     });
-  </script>
 
+    document.getElementById('copyAddress').addEventListener('click', function() {
+      const text = `${NAME}, ${FULL_ADDR}`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('✅ 地址已复制，请打开地图APP粘贴搜索');
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+      mapModal.classList.remove('active');
+    });
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('✅ 地址已复制，请打开地图APP粘贴搜索');
+      } catch (e) {
+        showToast('❌ 复制失败，请手动复制地址');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+  </script>
 </body>
 </html>
