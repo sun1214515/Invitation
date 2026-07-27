@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>全息玫瑰金 · 我们的婚礼请柬</title>
+  <style>
+    /* ===== 全局重置 & 炫酷深色主题 ===== */
+    :root {
+      --gold: #ffd700;
+      --rose-gold: #f8c8d8;
+      --deep-red: #8a033c;
+      --glass-bg: rgba(10, 0, 18, 0.65);
+      --glass-border: rgba(255, 215, 0, 0.25);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #0a0011;
+      color: #fff;
+      touch-action: none;
+      overscroll-behavior: none;
+    }
+
+    /* ===== 全息粒子背景（Canvas） ===== */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ===== 光晕特效 ===== */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+      animation: floatGlow 8s infinite alternate ease-in-out;
+    }
+    .glow-orb.g1 {
+      width: 400px;
+      height: 400px;
+      background: #ff6b6b;
+      top: -10%;
+      left: -10%;
+    }
+    .glow-orb.g2 {
+      width: 500px;
+      height: 500px;
+      background: #ffd700;
+      bottom: -20%;
+      right: -10%;
+      animation-delay: 3s;
+    }
+    @keyframes floatGlow {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        transform: translate(30px, 40px) scale(1.2);
+      }
+    }
+
+    /* ===== 主容器 ===== */
+    #app {
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      touch-action: none;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      will-change: transform;
+    }
+
+    /* ===== 页面样式（支持内部滚动） ===== */
+    .page {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 20px 40px;
+      position: relative;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      scroll-behavior: smooth;
+    }
+    .page::-webkit-scrollbar {
+      display: none;
+    }
+    .page-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 420px;
+      padding: 10px 0;
+    }
+
+    /* ===== 第1页：封面 & 名字 ===== */
+    .cover-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .cover-header .title {
+      font-size: 14px;
+      letter-spacing: 6px;
+      color: var(--gold);
+      opacity: 0.7;
+      font-weight: 300;
+    }
+    .cover-header .subtitle {
+      font-size: 32px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, var(--gold) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+    }
+
+    .names-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      width: 100%;
+      perspective: 1000px;
+    }
+    .name-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 25px 20px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(255, 215, 0, 0.05);
+      flex: 1;
+      max-width: 160px;
+      transform: rotateY(0deg) rotateX(0deg);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .name-card:hover {
+      transform: rotateY(-5deg) rotateX(5deg);
+      box-shadow: 0 30px 60px rgba(255, 215, 0, 0.15);
+    }
+    .name-card .name-cn {
+      display: block;
+      font-size: 38px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      letter-spacing: 6px;
+      line-height: 1.4;
+    }
+    /* 针对两个字的名字自动调整间距，保持视觉平衡 */
+    .name-card .name-cn.span-2 {
+      letter-spacing: 12px;
+    }
+    .name-card .name-en {
+      display: block;
+      font-size: 10px;
+      color: var(--gold);
+      opacity: 0.6;
+      letter-spacing: 2px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+    .name-card .name-role {
+      display: block;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      font-weight: 300;
+    }
+
+    .divider-xi {
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 107, 107, 0.3);
+      animation: pulseGlow 2.5s infinite alternate;
+      padding: 0 10px;
+    }
+    @keyframes pulseGlow {
+      0% {
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+      }
+      100% {
+        text-shadow: 0 0 60px rgba(255, 215, 0, 0.6), 0 0 120px rgba(255, 107, 107, 0.4);
+        transform: scale(1.05);
+      }
+    }
+
+    .cover-date {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 8px;
+      font-weight: 300;
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      padding-top: 20px;
+      margin-top: 10px;
+    }
+
+    /* ===== 通用标题 ===== */
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 12px;
+      color: var(--gold);
+      opacity: 0.5;
+      letter-spacing: 6px;
+      font-weight: 300;
+      margin-bottom: 25px;
+    }
+
+    /* ===== 第2页：时间线（科技感连线） ===== */
+    .timeline {
+      width: 100%;
+      max-width: 340px;
+      position: relative;
+      padding-left: 25px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), var(--deep-red), transparent);
+      box-shadow: 0 0 10px var(--gold);
+    }
+    .node {
+      margin-bottom: 35px;
+      position: relative;
+    }
+    .node::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #0a0011;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 20px var(--gold);
+    }
+    .node-date {
+      font-size: 14px;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .node-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+    }
+
+    /* ===== 第3页：照片网格（全息光效） ===== */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .photo-item {
+      aspect-ratio: 1/1;
+      background: var(--glass-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 4px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      transition: all 0.4s ease;
+      position: relative;
+    }
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: transform 0.6s ease;
+    }
+    .photo-item:hover img {
+      transform: scale(1.08);
+    }
+    .photo-item::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.2) 50%, transparent 60%);
+      animation: shimmer 4s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%) translateY(-100%);
+      }
+      100% {
+        transform: translateX(100%) translateY(100%);
+      }
+    }
+
+    /* ===== 第4页：横向滚动画廊 ===== */
+    .gallery-track {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      overflow-x: auto;
+      padding: 10px 0 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
+    }
+    .gallery-track::-webkit-scrollbar {
+      display: none;
+    }
+    .gallery-item {
+      flex: 0 0 240px;
+      height: 320px;
+      background: var(--glass-bg);
+      border-radius: 16px;
+      scroll-snap-align: center;
+      position: relative;
+      padding: 6px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .gallery-item .tag {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 2;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* ===== 第5页：邀请卡与导航 ===== */
+    .invite-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .info-row {
+      display: flex;
+      margin-bottom: 25px;
+      align-items: flex-start;
+    }
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--gold), #ff6b6b);
+      border-radius: 50%;
+      color: #0a0011;
+      font-size: 18px;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .info-label {
+      font-size: 11px;
+      color: var(--gold);
+      opacity: 0.6;
+      letter-spacing: 2px;
+      font-weight: 300;
+    }
+    .info-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.5;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+    }
+    .nav-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, #ffd700, #ff6b6b);
+      border: none;
+      border-radius: 50px;
+      color: #0a0011;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
+      margin-top: 10px;
+    }
+    .nav-btn:active {
+      transform: scale(0.98);
+      filter: brightness(1.1);
+    }
+
+    /* ===== 分页指示器 ===== */
+    .pagination {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .dot.active {
+      background: var(--gold);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+      transform: scale(1.8);
+      border-color: #fff;
+    }
+
+    /* ===== 自动播放按钮 ===== */
+    .auto-play-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 20px;
+      z-index: 100;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: var(--gold);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auto-play-btn:active {
+      transform: scale(0.9);
+    }
+
+    /* ===== 底部地图弹窗 ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .map-modal {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px);
+      border-top: 1px solid var(--glass-border);
+      border-radius: 30px 30px 0 0;
+      padding: 30px 20px 40px;
+      transform: translateY(100%);
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .modal-overlay.active .map-modal {
+      transform: translateY(0);
+    }
+    .modal-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 25px;
+      letter-spacing: 2px;
+    }
+    .map-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .map-option-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .map-option-btn:active {
+      transform: scale(0.98);
+      background: rgba(255, 215, 0, 0.1);
+    }
+    .map-option-btn.recommend {
+      background: linear-gradient(90deg, #ffd700, #ff6b6b);
+      color: #0a0011;
+      border: none;
+      font-weight: 700;
+    }
+    .cancel-btn {
+      width: 100%;
+      padding: 16px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 15px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    /* ===== 滚动提示 ===== */
+    .scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: rgba(255, 215, 0, 0.4);
+      font-size: 12px;
+      letter-spacing: 2px;
+      animation: bounce 2s infinite;
+      pointer-events: none;
+    }
+    .scroll-hint .arrow {
+      width: 16px;
+      height: 16px;
+      border-right: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+      transform: rotate(45deg);
+      margin-top: 6px;
+      opacity: 0.6;
+    }
+    @keyframes bounce {
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+      50% {
+        transform: translateX(-50%) translateY(8px);
+      }
+    }
+
+    /* ===== 工具类 ===== */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 全息粒子背景 -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- 光晕特效 -->
+  <div class="glow-orb g1"></div>
+  <div class="glow-orb g2"></div>
+
+  <!-- 分页指示器 -->
+  <div class="pagination" id="pagination">
+    <div class="dot active" data-index="0"></div>
+    <div class="dot" data-index="1"></div>
+    <div class="dot" data-index="2"></div>
+    <div class="dot" data-index="3"></div>
+    <div class="dot" data-index="4"></div>
+  </div>
+
+  <!-- 自动播放按钮 -->
+  <div class="auto-play-btn" id="autoPlayBtn" title="自动播放/暂停">⏸</div>
+
+  <!-- ===== 主应用 ===== -->
+  <div id="app">
+
+    <!-- 第1页：封面 -->
+    <section class="page" id="page0">
+      <div class="page-content">
+        <div class="cover-header">
+          <div class="title">— 全息婚礼邀请 —</div>
+          <div class="subtitle">WE ARE GETTING MARRIED</div>
+        </div>
+
+        <div class="names-container">
+          <div class="name-card">
+            <span class="name-role">GROOM</span>
+            <!-- 新郎名字：孙卫豪（3个字） -->
+            <span class="name-cn">孙卫豪</span>
+            <span class="name-en">SUN WEIHAO</span>
+          </div>
+          <div class="divider-xi">囍</div>
+          <div class="name-card">
+            <span class="name-role">BRIDE</span>
+            <!-- 新娘名字：吴娇（2个字），加上 span-2 类自动调整字间距，与3个字视觉平衡 -->
+            <span class="name-cn span-2">吴 娇</span>
+            <span class="name-en">WU JIAO</span>
+          </div>
+        </div>
+
+        <div class="cover-date">2026.10.03 | 18:08</div>
+        <div class="scroll-hint"><span>向上滑动 开启喜悦</span><div class="arrow"></div></div>
+      </div>
+    </section>
+
+    <!-- 第2页：时光长卷 -->
+    <section class="page" id="page1">
+      <div class="page-content">
+        <div class="section-title">时光长卷</div>
+        <div class="section-sub">OUR LOVE STORY</div>
+        <div class="timeline">
+          <div class="node"><div class="node-date">2019.09 初见·惊鸿</div><div class="node-text">人海中的第一次相遇，像是命运写好的底层代码，一眼万年。</div></div>
+          <div class="node"><div class="node-date">2021.05 相恋·同频</div><div class="node-text">确认过眼神，是频率完全契合的人。从此，我的喜怒哀乐都有了回音。</div></div>
+          <div class="node"><div class="node-date">2023.10 求婚·锁定</div><div class="node-text">一枚戒指，一句誓言。在亲友的见证下，我们锁定了彼此的未来。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第3页：鎏金岁月 -->
+    <section class="page" id="page2">
+      <div class="page-content">
+        <div class="section-title">鎏金岁月</div>
+        <div class="section-sub">SWEET MOMENTS</div>
+        <div class="photo-grid">
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=21" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=22" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=23" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=24" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=25" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=26" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=27" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=28" alt=""></div>
+          <div class="photo-item"><img src="https://picsum.photos/200/200?random=29" alt=""></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第4页：光影长情 -->
+    <section class="page" id="page3">
+      <div class="page-content">
+        <div class="section-title">光影长情</div>
+        <div class="section-sub">SWIPE LEFT FOR MORE</div>
+        <div class="gallery-track">
+          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=30" alt=""><div class="tag">📸 定格·婚纱照</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=31" alt=""><div class="tag">🌍 足迹·看世界</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=32" alt=""><div class="tag">☕ 日常·烟火气</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=33" alt=""><div class="tag">💍 承诺·戴戒指</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第5页：喜宴坐标（支持内部滚动） -->
+    <section class="page" id="page4">
+      <div class="page-content">
+        <div class="section-title">喜宴坐标</div>
+        <div class="section-sub">INVITATION</div>
+        <div class="invite-card">
+          <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时 / TIME</div><div class="info-value">2026年10月3日 (周六)<br>农历 八月廿二 18:08</div></div></div>
+          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地 / LOCATION</div><div class="info-value">杭州市西湖区 · 瑰丽酒店<br>三层 玫瑰宴会厅</div></div></div>
+          <!-- 此处可替换为真实地图截图 -->
+          <div style="width:100%;height:100px;background:rgba(255,255,255,0.05);border-radius:12px;margin-bottom:20px;display:flex;justify-content:center;align-items:center;color:rgba(255,255,255,0.2);font-size:12px;border:1px dashed rgba(255,215,0,0.2);">📍 地图预览区域（可替换为真实截图）</div>
+          <button class="nav-btn" id="openMapModal">🧭 一键导航赴宴</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== 底部地图弹窗 ===== -->
+  <div class="modal-overlay" id="mapModal">
+    <div class="map-modal">
+      <div class="modal-title">请选择导航地图</div>
+      <div class="map-options">
+        <button class="map-option-btn recommend" id="btnTencent"><span>💬</span> 微信/腾讯地图 (推荐)</button>
+        <button class="map-option-btn" id="btnAmap"><span>🗺️</span> 高德地图</button>
+        <button class="map-option-btn" id="btnBaidu"><span>🐾</span> 百度地图</button>
+        <button class="map-option-btn" id="btnApple"><span>🍎</span> 苹果地图 (iOS)</button>
+      </div>
+      <button class="cancel-btn" id="closeMapModal">取消</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // 1. 全息粒子背景（Canvas）
+    // ============================================================
+    (function() {
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h;
+      const particles = [];
+      const COUNT = 120;
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h;
+          this.size = Math.random() * 2.5 + 0.5;
+          this.speedX = (Math.random() - 0.5) * 0.4;
+          this.speedY = (Math.random() - 0.5) * 0.4;
+          this.opacity = Math.random() * 0.6 + 0.2;
+          this.color = Math.random() > 0.7 ? '255, 215, 0' : '255, 255, 255';
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x < 0 || this.x > w) this.speedX *= -1;
+          if (this.y < 0 || this.y > h) this.speedY *= -1;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+          ctx.fill();
+          // 发光效果
+          if (this.size > 1.5) {
+            ctx.shadowColor = `rgba(255, 215, 0, 0.3)`;
+            ctx.shadowBlur = 15;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      }
+
+      for (let i = 0; i < COUNT; i++) {
+        particles.push(new Particle());
+      }
+
+      function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(255, 215, 0, ${0.08 * (1 - dist / 120)})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => { p.update();
+          p.draw(); });
+        drawLines();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ============================================================
+    // 2. 核心滑动引擎（支持内部滚动防冲突）
+    // ============================================================
+    const app = document.getElementById('app');
+    const pages = document.querySelectorAll('.page');
+    const dots = document.querySelectorAll('.dot');
+    let currentIndex = 0;
+    let isAnimating = false;
+    let touchStartY = 0;
+    let currentTranslateY = 0;
+    let isSwiping = false;
+
+    function getScreenHeight() { return window.innerHeight; }
+
+    function initLayout() {
+      const h = getScreenHeight();
+      app.style.height = (h * pages.length) + 'px';
+      pages.forEach(page => page.style.height = h + 'px');
+      goToPage(currentIndex, false);
+    }
+    initLayout();
+    window.addEventListener('resize', initLayout);
+
+    function goToPage(index, animate = true) {
+      if (index < 0) index = 0;
+      if (index >= pages.length) index = pages.length - 1;
+      currentIndex = index;
+      currentTranslateY = -currentIndex * getScreenHeight();
+      if (!animate) {
+        app.style.transition = 'none';
+      } else {
+        app.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+      }
+      app.style.transform = `translateY(${currentTranslateY}px)`;
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+      if (animate) {
+        isAnimating = true;
+        setTimeout(() => { isAnimating = false; }, 600);
+      } else {
+        isAnimating = false;
+      }
+    }
+
+    function handleTouchStart(e) {
+      if (isAnimating) return;
+      touchStartY = e.touches[0].clientY;
+      const currentPage = pages[currentIndex];
+      // 检查当前页是否可滚动
+      const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
+      if (isScrollable) {
+        // 如果可滚动，判断是否在边界
+        const atTop = currentPage.scrollTop === 0;
+        const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1;
+        // 只有在边界时才允许全屏滑动
+        if (atTop || atBottom) {
+          isSwiping = true;
+        } else {
+          isSwiping = false;
+        }
+      } else {
+        isSwiping = true;
+      }
+      // 如果允许滑动，阻止默认行为以防止页面滚动
+      if (isSwiping) {
+        e.preventDefault();
+      }
+    }
+
+    function handleTouchMove(e) {
+      if (isAnimating || !isSwiping) return;
+      const touchCurrentY = e.touches[0].clientY;
+      let diff = touchCurrentY - touchStartY;
+      const currentPage = pages[currentIndex];
+      const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
+
+      if (isScrollable) {
+        const atTop = currentPage.scrollTop === 0;
+        const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1;
+        if ((atTop && diff > 0) || (atBottom && diff < 0)) {
+          // 在边界，允许全屏滑动
+          e.preventDefault();
+        } else {
+          // 不在边界，让页面自然滚动，不触发全屏滑动
+          return;
+        }
+      } else {
+        e.preventDefault();
+      }
+
+      // 边界阻尼效果
+      if ((currentIndex === 0 && diff > 0) || (currentIndex === pages.length - 1 && diff < 0)) {
+        diff = diff * 0.3;
+      }
+      const translateY = -currentIndex * getScreenHeight() + diff;
+      app.style.transition = 'none';
+      app.style.transform = `translateY(${translateY}px)`;
+    }
+
+    function handleTouchEnd(e) {
+      if (isAnimating || !isSwiping) return;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = touchEndY - touchStartY;
+      const threshold = getScreenHeight() * 0.15;
+      let nextPage = currentIndex;
+      if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1;
+      else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
+      goToPage(nextPage, true);
+    }
+
+    app.addEventListener('touchstart', handleTouchStart, { passive: false });
+    app.addEventListener('touchmove', handleTouchMove, { passive: false });
+    app.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // 鼠标事件支持（PC调试）
+    let mouseDown = false;
+    let mouseStartY = 0;
+    app.addEventListener('mousedown', (e) => {
+      mouseDown = true;
+      mouseStartY = e.clientY;
+      const currentPage = pages[currentIndex];
+      const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
+      if (isScrollable) {
+        const atTop = currentPage.scrollTop === 0;
+        const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1;
+        if (atTop || atBottom) isSwiping = true;
+        else isSwiping = false;
+      } else {
+        isSwiping = true;
+      }
+    });
+    app.addEventListener('mousemove', (e) => {
+      if (!mouseDown || isAnimating || !isSwiping) return;
+      const diff = e.clientY - mouseStartY;
+      // 简单的边界逻辑
+      if ((currentIndex === 0 && diff > 0) || (currentIndex === pages.length - 1 && diff < 0)) {
+        // 阻尼
+      }
+      const translateY = -currentIndex * getScreenHeight() + diff;
+      app.style.transition = 'none';
+      app.style.transform = `translateY(${translateY}px)`;
+    });
+    app.addEventListener('mouseup', (e) => {
+      if (!mouseDown || !isSwiping) return;
+      mouseDown = false;
+      const diff = e.clientY - mouseStartY;
+      const threshold = getScreenHeight() * 0.15;
+      let nextPage = currentIndex;
+      if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1;
+      else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
+      goToPage(nextPage, true);
+    });
+    app.addEventListener('mouseleave', () => {
+      if (mouseDown) {
+        mouseDown = false;
+        goToPage(currentIndex, true);
+      }
+    });
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        if (isAnimating) return;
+        const index = parseInt(dot.dataset.index);
+        goToPage(index, true);
+        pauseAutoPlay();
+      });
+    });
+
+    // ============================================================
+    // 3. 自动播放系统
+    // ============================================================
+    let autoPlayTimer = null;
+    let isAutoPlaying = true;
+    const AUTO_PLAY_INTERVAL = 4000;
+    const autoPlayBtn = document.getElementById('autoPlayBtn');
+
+    function startAutoPlay() {
+      isAutoPlaying = true;
+      autoPlayBtn.innerHTML = '⏸';
+      clearInterval(autoPlayTimer);
+      autoPlayTimer = setInterval(() => {
+        if (currentIndex < pages.length - 1) {
+          goToPage(currentIndex + 1, true);
+        } else {
+          pauseAutoPlay();
+        }
+      }, AUTO_PLAY_INTERVAL);
+    }
+
+    function pauseAutoPlay() {
+      isAutoPlaying = false;
+      autoPlayBtn.innerHTML = '▶';
+      clearInterval(autoPlayTimer);
+    }
+
+    autoPlayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isAutoPlaying) pauseAutoPlay();
+      else startAutoPlay();
+    });
+
+    startAutoPlay();
+
+    // ============================================================
+    // 4. 地图弹窗逻辑
+    // ============================================================
+    const HOTEL_NAME = "杭州瑰丽酒店";
+    const LAT = "30.2741";
+    const LNG = "120.1551";
+
+    const mapModal = document.getElementById('mapModal');
+    document.getElementById('openMapModal').addEventListener('click', () => {
+      mapModal.classList.add('active');
+      pauseAutoPlay();
+    });
+    document.getElementById('closeMapModal').addEventListener('click', () => mapModal.classList.remove('active'));
+    mapModal.addEventListener('click', (e) => {
+      if (e.target === mapModal) mapModal.classList.remove('active');
+    });
+
+    document.getElementById('btnTencent').addEventListener('click', () => {
+      window.location.href =
+        `https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${HOTEL_NAME}&tocoord=${LAT},${LNG}&referer=Wedding`;
+    });
+    document.getElementById('btnAmap').addEventListener('click', () => {
+      window.location.href =
+        `https://uri.amap.com/navigation?to=${LNG},${LAT},${HOTEL_NAME}&mode=car&coordinate=gaode&callnative=1`;
+    });
+    document.getElementById('btnBaidu').addEventListener('click', () => {
+      window.location.href =
+        `https://api.map.baidu.com/direction?destination=latlng:${LAT},${LNG}|name:${HOTEL_NAME}&mode=driving&output=html`;
+    });
+    document.getElementById('btnApple').addEventListener('click', () => {
+      window.location.href = `http://maps.apple.com/?ll=${LAT},${LNG}&q=${HOTEL_NAME}`;
+    });
+  </script>
+
+</body>
+</html>
