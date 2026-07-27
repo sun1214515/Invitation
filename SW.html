@@ -9,17 +9,19 @@
     html, body {
       height: 100%; width: 100%; overflow: hidden;
       font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
-      background: #fff5f7; color: #5a2d3a;
-      touch-action: none; overscroll-behavior: none;
+      background: linear-gradient(180deg, #2d0a1f 0%, #5a1a3a 25%, #8b2d4e 50%, #c43e5c 75%, #e85d75 100%);
+      color: #ffd1dc; touch-action: none; overscroll-behavior: none;
     }
     .bg-container {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 20% 30%, #fff0f5 0%, #fce4ec 40%, #f8c8d8 100%);
+      background: radial-gradient(ellipse at 50% 80%, rgba(255, 182, 193, 0.3) 0%, rgba(212, 175, 55, 0.15) 40%, transparent 70%),
+                  radial-gradient(ellipse at 20% 50%, rgba(255, 105, 180, 0.2) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 50%);
       z-index: 0;
     }
     .bg-container::after {
       content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-      background: conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(255,215,0,0.08) 25%, transparent 50%, rgba(255,105,180,0.08) 75%, transparent 100%);
+      background: conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(255,182,193,0.05) 25%, transparent 50%, rgba(212,175,55,0.05) 75%, transparent 100%);
       animation: spinBg 30s linear infinite; pointer-events: none;
     }
     @keyframes spinBg { 100% { transform: rotate(360deg); } }
@@ -27,10 +29,93 @@
       position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 1;
       animation: floatGlow 10s infinite alternate ease-in-out;
     }
-    .glow-ball.g1 { width: 400px; height: 400px; background: #ffb6c1; top: -10%; left: -10%; opacity: 0.4; }
-    .glow-ball.g2 { width: 500px; height: 500px; background: #ffd700; bottom: -20%; right: -10%; opacity: 0.25; animation-delay: 4s; }
+    .glow-ball.g1 { width: 500px; height: 500px; background: #ff6b9d; top: -15%; left: -15%; opacity: 0.35; }
+    .glow-ball.g2 { width: 600px; height: 600px; background: #ffd700; bottom: -25%; right: -15%; opacity: 0.3; animation-delay: 4s; }
+    .glow-ball.g3 { width: 400px; height: 400px; background: #ff8c42; top: 40%; left: 50%; opacity: 0.2; animation-delay: 2s; }
     @keyframes floatGlow { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,40px) scale(1.2); } }
     #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+    /* 星空粒子Canvas */
+    #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+    /* 爱心粒子 */
+    .heart-particle {
+      position: fixed; pointer-events: none; z-index: 3;
+      animation: floatHeart 8s linear infinite;
+      opacity: 0;
+    }
+    .heart-particle::before {
+      content: '❤'; font-size: 20px; color: rgba(255, 50, 80, 0.8);
+      filter: drop-shadow(0 0 10px rgba(255, 20, 60, 0.9)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    }
+    .heart-particle.gold::before {
+      content: '✦'; color: rgba(255, 215, 0, 0.9);
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.9));
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+    }
+
+    /* 花瓣飘落 */
+    .petal {
+      position: fixed; pointer-events: none; z-index: 3;
+      animation: fallPetal 12s linear infinite;
+      opacity: 0;
+    }
+    .petal::before {
+      content: '🌸'; font-size: 16px;
+      filter: drop-shadow(0 0 6px rgba(255, 192, 203, 0.6));
+    }
+    .petal.rose::before { content: '🌹'; }
+    .petal.peach::before { content: '🌺'; }
+    @keyframes fallPetal {
+      0% { transform: translateY(-10vh) translateX(0) rotate(0deg) scale(0.6); opacity: 0; }
+      5% { opacity: 0.9; }
+      95% { opacity: 0.9; }
+      100% { transform: translateY(110vh) translateX(50px) rotate(720deg) scale(1); opacity: 0; }
+    }
+
+    /* 光晕脉冲 */
+    .pulse-ring {
+      position: absolute; border-radius: 50%;
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      animation: pulseRing 2s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* 涟漪效果 */
+    .ripple {
+      position: fixed; border-radius: 50%; border: 2px solid rgba(255, 215, 0, 0.6);
+      animation: rippleEffect 0.8s ease-out forwards;
+      pointer-events: none; z-index: 1000;
+    }
+    @keyframes rippleEffect {
+      0% { width: 0; height: 0; opacity: 1; border-color: rgba(255, 50, 80, 0.8); }
+      50% { border-color: rgba(255, 215, 0, 0.6); }
+      100% { width: 200px; height: 200px; opacity: 0; margin-left: -100px; margin-top: -100px; border-color: rgba(255, 215, 0, 0.2); }
+    }
+
+    /* 流星 */
+    .shooting-star {
+      position: fixed; width: 100px; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+      animation: shoot 3s linear infinite;
+      pointer-events: none; z-index: 2;
+      opacity: 0;
+    }
+    @keyframes shoot {
+      0% { transform: translateX(-100px) translateY(0) rotate(-45deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(100vw) translateY(100vh) rotate(-45deg); opacity: 0; }
+    }
     #app { position: relative; z-index: 10; width: 100%; will-change: transform; transition: transform 0.5s cubic-bezier(0.23,1,0.32,1); }
     .page {
       width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -39,22 +124,34 @@
     }
     .page::-webkit-scrollbar { display: none; }
     .page-content { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; padding: 5px 0 40px; min-height: calc(100% + 20px); }
-    .section-title { font-size: 28px; font-weight: 700; letter-spacing: 6px; background: linear-gradient(135deg, #d92121, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(212,175,55,0.2)); margin-bottom: 2px; }
+    .section-title { font-size: 28px; font-weight: 700; letter-spacing: 6px; background: linear-gradient(135deg, #ffd1dc, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(212,175,55,0.3)); margin-bottom: 2px; }
     .section-sub { font-size: 12px; color: #d4af37; opacity: 0.7; letter-spacing: 6px; font-weight: 300; margin-bottom: 20px; }
     /* 第1页 */
     .cover-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; transition: transform 0.1s ease-out; }
     .cover-header { text-align: center; margin-bottom: 10px; }
     .cover-header .pre-title { font-size: 12px; letter-spacing: 8px; color: #d4af37; opacity: 0.6; }
-    .cover-header .main-title { font-size: 38px; font-weight: 900; background: linear-gradient(135deg, #8b0000, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 40px rgba(212,175,55,0.2); letter-spacing: 4px; }
+    .cover-header .main-title { font-size: 38px; font-weight: 900; background: linear-gradient(135deg, #ffd1dc, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 40px rgba(212,175,55,0.2); letter-spacing: 4px; }
     .names-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0 20px; width: 100%; perspective: 800px; }
-    .name-card { background: rgba(255,255,255,0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.8); border-radius: 20px; padding: 18px 12px; text-align: center; box-shadow: 0 20px 50px rgba(139,0,0,0.08), inset 0 0 30px rgba(255,215,0,0.05); flex: 1; max-width: 150px; transition: all 0.3s ease; will-change: transform; }
+    .name-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 18px 12px; text-align: center; box-shadow: 0 20px 50px rgba(139,0,0,0.08), inset 0 0 30px rgba(255,215,0,0.05); flex: 1; max-width: 150px; transition: all 0.3s ease; will-change: transform; }
     .name-card .role { font-size: 10px; color: #d4af37; opacity: 0.7; letter-spacing: 4px; font-weight: 600; }
-    .name-card .cn { font-size: 34px; font-weight: 900; color: #5a2d3a; letter-spacing: 4px; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .name-card .cn { font-size: 34px; font-weight: 900; color: #ffd1dc; letter-spacing: 4px; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
     .name-card .cn.span-2 { letter-spacing: 10px; }
-    .name-card .en { font-size: 10px; color: rgba(90,45,58,0.4); letter-spacing: 2px; margin-top: 4px; }
-    .divider-xi { font-size: 48px; font-weight: 900; color: #d92121; text-shadow: 0 0 30px rgba(217,33,33,0.2), 0 0 60px rgba(212,175,55,0.1); animation: pulseGold 3s infinite alternate; padding: 0 5px; }
+    .name-card .en { font-size: 10px; color: rgba(255,209,220,0.4); letter-spacing: 2px; margin-top: 4px; }
+    .divider-xi { font-size: 48px; font-weight: 900; color: #d92121; text-shadow: 0 0 30px rgba(217,33,33,0.4), 0 0 60px rgba(212,175,55,0.2); animation: pulseGold 3s infinite alternate; padding: 0 5px; position: relative; }
+    .divider-xi::before {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      animation: pulseRing 2s ease-out infinite;
+    }
+    .divider-xi::after {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      animation: pulseRing 2s ease-out 0.5s infinite;
+    }
     @keyframes pulseGold { 0% { text-shadow: 0 0 20px rgba(212,175,55,0.2); transform: scale(1); } 100% { text-shadow: 0 0 50px rgba(212,175,55,0.5), 0 0 100px rgba(217,33,33,0.2); transform: scale(1.06); } }
-    .cover-date { font-size: 16px; letter-spacing: 8px; color: rgba(90,45,58,0.6); border-top: 1px solid rgba(212,175,55,0.3); padding-top: 15px; font-weight: 300; }
+    .cover-date { font-size: 16px; letter-spacing: 8px; color: rgba(255,209,220,0.6); border-top: 1px solid rgba(212,175,55,0.3); padding-top: 15px; font-weight: 300; }
     .scroll-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; color: rgba(212,175,55,0.5); font-size: 11px; letter-spacing: 2px; animation: bounceUp 2s infinite; pointer-events: none; }
     .scroll-hint .arrow { width: 14px; height: 14px; border-right: 2px solid #d4af37; border-bottom: 2px solid #d4af37; transform: rotate(45deg); margin-top: 5px; opacity: 0.5; }
     @keyframes bounceUp { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
@@ -64,19 +161,19 @@
     .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #d4af37, #ffb6c1, #d92121, #d4af37); background-size: 100% 300%; animation: flowLine 3s linear infinite; box-shadow: 0 0 12px rgba(212,175,55,0.3); border-radius: 2px; }
     @keyframes flowLine { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
     .node { margin-bottom: 35px; position: relative; padding-left: 10px; }
-    .node::before { content: ''; position: absolute; left: -22px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.4); z-index: 2; }
+    .node::before { content: ''; position: absolute; left: -22px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.4); z-index: 2; }
     .node::after { content: ''; position: absolute; left: -26px; top: 0px; width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(212,175,55,0.3); animation: ripple 2s ease-out infinite; z-index: 1; }
     .node:nth-child(1)::after { animation-delay: 0s; } .node:nth-child(2)::after { animation-delay: 0.6s; } .node:nth-child(3)::after { animation-delay: 1.2s; }
     @keyframes ripple { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
-    .node .year-bg { position: absolute; right: -10px; top: -20px; font-size: 64px; font-weight: 900; color: rgba(212,175,55,0.06); pointer-events: none; z-index: 0; line-height: 1; font-family: 'Helvetica Neue', monospace; letter-spacing: -4px; user-select: none; }
-    .node-date { font-size: 15px; color: #d92121; font-weight: 700; letter-spacing: 1px; position: relative; z-index: 2; }
-    .node-text { font-size: 14px; line-height: 1.7; color: rgba(90,45,58,0.8); font-weight: 400; position: relative; z-index: 2; }
+    .node .year-bg { position: absolute; right: -10px; top: -20px; font-size: 64px; font-weight: 900; color: rgba(212,175,55,0.08); pointer-events: none; z-index: 0; line-height: 1; font-family: 'Helvetica Neue', monospace; letter-spacing: -4px; user-select: none; }
+    .node-date { font-size: 15px; color: #d4af37; font-weight: 700; letter-spacing: 1px; position: relative; z-index: 2; }
+    .node-text { font-size: 14px; line-height: 1.7; color: rgba(255,209,220,0.8); font-weight: 400; position: relative; z-index: 2; }
     .page-1-deco { position: absolute; font-size: 20px; opacity: 0.15; pointer-events: none; animation: floatDeco 6s infinite alternate ease-in-out; }
     .page-1-deco.d1 { top: 10%; left: 5%; animation-delay: 0s; } .page-1-deco.d2 { bottom: 20%; right: 5%; animation-delay: 2s; font-size: 28px; } .page-1-deco.d3 { top: 40%; right: 2%; animation-delay: 4s; font-size: 16px; }
     @keyframes floatDeco { 0% { transform: translateY(0) rotate(0deg); opacity: 0.1; } 100% { transform: translateY(-20px) rotate(15deg); opacity: 0.25; } }
     /* 第3页 9宫格 */
     .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 360px; }
-    .photo-item { aspect-ratio: 1/1; background: rgba(255,255,255,0.5); backdrop-filter: blur(4px); border-radius: 12px; overflow: hidden; padding: 4px; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 8px 25px rgba(139,0,0,0.06); transition: all 0.4s cubic-bezier(0.23,1,0.32,1); position: relative; }
+    .photo-item { aspect-ratio: 1/1; background: rgba(255,255,255,0.08); backdrop-filter: blur(4px); border-radius: 12px; overflow: hidden; padding: 4px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 25px rgba(139,0,0,0.06); transition: all 0.4s cubic-bezier(0.23,1,0.32,1); position: relative; }
     .photo-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; transition: transform 0.6s ease; }
     .photo-item:hover img { transform: scale(1.06); }
     .photo-item::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(255,215,0,0.15) 50%, transparent 60%); animation: shimmer 5s infinite; pointer-events: none; }
@@ -105,13 +202,13 @@
     .gallery-track-4 .gallery-item {
       flex: 0 0 220px;
       height: 300px;
-      background: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.05);
       backdrop-filter: blur(8px);
       border-radius: 16px;
       scroll-snap-align: center;
       padding: 6px;
-      border: 1px solid rgba(255,255,255,0.9);
-      box-shadow: 0 15px 35px rgba(139,0,0,0.08);
+      border: 1px solid rgba(255,215,0,0.15);
+      box-shadow: 0 15px 35px rgba(139,0,0,0.08), 0 0 20px rgba(255,215,0,0.05);
       overflow: hidden;
       position: relative;
       transition: transform 0.2s ease;
@@ -130,14 +227,14 @@
       position: absolute;
       bottom: 18px;
       left: 18px;
-      background: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.4);
       backdrop-filter: blur(8px);
       padding: 4px 16px;
       border-radius: 20px;
       font-size: 12px;
-      color: #d92121;
+      color: #ffd1dc;
       font-weight: 600;
-      border: 1px solid rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,215,0,0.3);
       pointer-events: none;
     }
 
@@ -189,23 +286,23 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(90,45,58,0.2);
+      background: rgba(255, 215, 0, 0.2);
       transition: all 0.3s;
       flex-shrink: 0;
       cursor: pointer;
     }
     .scroll-dots span.active {
       background: #d92121;
-      box-shadow: 0 0 12px rgba(217,33,33,0.4);
+      box-shadow: 0 0 12px rgba(255, 50, 80, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
       transform: scale(1.4);
     }
 
     /* 第5页 邀请卡 */
     .invite-card {
       width: 100%; max-width: 360px;
-      background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.8); border-radius: 20px;
-      padding: 28px 22px; box-shadow: 0 20px 50px rgba(139,0,0,0.06);
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,215,0,0.2); border-radius: 20px;
+      padding: 28px 22px; box-shadow: 0 20px 50px rgba(139,0,0,0.1), 0 0 30px rgba(255,215,0,0.05);
       transition: transform 0.1s ease-out; will-change: transform; margin-bottom: 5px;
     }
     .info-row { display: flex; margin-bottom: 22px; align-items: flex-start; }
@@ -213,18 +310,26 @@
       width: 38px; height: 38px; display: flex; justify-content: center; align-items: center;
       background: linear-gradient(135deg, #d92121, #d4af37); border-radius: 50%;
       color: #fff; font-size: 16px; margin-right: 15px; flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(217,33,33,0.2);
+      box-shadow: 0 4px 12px rgba(217,33,33,0.3), 0 0 15px rgba(255,215,0,0.2);
     }
     .info-label { font-size: 10px; color: #d4af37; opacity: 0.7; letter-spacing: 2px; font-weight: 600; }
-    .info-value { font-size: 16px; font-weight: 700; color: #5a2d3a; line-height: 1.5; }
+    .info-value { font-size: 16px; font-weight: 700; color: #ffd1dc; line-height: 1.5; }
     .nav-btn {
       width: 100%; padding: 16px;
       background: linear-gradient(90deg, #d92121, #d4af37);
       border: none; border-radius: 50px;
       color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 4px;
       cursor: pointer; transition: all 0.3s ease;
-      box-shadow: 0 8px 30px rgba(217,33,33,0.25);
+      box-shadow: 0 8px 30px rgba(217,33,33,0.3), 0 0 20px rgba(255,215,0,0.15);
       margin-top: 8px; position: relative; overflow: hidden;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.03); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.03); }
+      70% { transform: scale(1); }
     }
     .nav-btn::after {
       content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
@@ -241,22 +346,22 @@
     }
     .dot {
       width: 7px; height: 7px; border-radius: 50%;
-      background: rgba(90,45,58,0.2);
+      background: rgba(255, 215, 0, 0.2);
       transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
       cursor: pointer; border: 1px solid transparent;
     }
     .dot.active {
-      background: #d92121; box-shadow: 0 0 20px rgba(217,33,33,0.4);
+      background: #d92121; box-shadow: 0 0 20px rgba(255, 50, 80, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
       transform: scale(2); border-color: #d4af37;
     }
     .auto-btn {
       position: fixed; bottom: 30px; right: 20px; z-index: 100;
       width: 44px; height: 44px; border-radius: 50%;
-      background: rgba(255,255,255,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,215,0,0.3);
       display: flex; justify-content: center; align-items: center;
-      font-size: 18px; color: #d92121;
-      box-shadow: 0 4px 15px rgba(139,0,0,0.06);
+      font-size: 18px; color: #ffd1dc;
+      box-shadow: 0 4px 15px rgba(139,0,0,0.1), 0 0 10px rgba(255,215,0,0.1);
       cursor: pointer; transition: 0.2s;
     }
     .auto-btn:active { transform: scale(0.9); }
@@ -316,15 +421,108 @@
       z-index: 1000; opacity: 0; transition: opacity 0.4s; pointer-events: none;
     }
     .toast.show { opacity: 1; }
+
+    /* 加载动画 */
+    .loader-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #2d0a1f 0%, #5a1a3a 50%, #8b2d4e 100%);
+      z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .loader-overlay.hidden { opacity: 0; visibility: hidden; }
+    .loader-xi {
+      font-size: 80px; font-weight: 900; color: #d92121;
+      text-shadow: 0 0 40px rgba(255, 50, 80, 0.5), 0 0 80px rgba(255, 215, 0, 0.3);
+      animation: loaderPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes loaderPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    .loader-bar {
+      width: 200px; height: 3px; background: rgba(212,175,55,0.2);
+      border-radius: 3px; margin-top: 30px; overflow: hidden;
+    }
+    .loader-bar-inner {
+      width: 0%; height: 100%; background: linear-gradient(90deg, #d92121, #d4af37);
+      border-radius: 3px; animation: loaderProgress 2s ease-out forwards;
+    }
+    @keyframes loaderProgress { 0% { width: 0%; } 100% { width: 100%; } }
+    .loader-text {
+      margin-top: 15px; font-size: 12px; color: rgba(255,209,220,0.5);
+      letter-spacing: 4px;
+    }
+
+    /* 页面进入动画 */
+    .page-enter {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .page-enter.active {
+      opacity: 1; transform: translateY(0);
+    }
+    .stagger-item {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stagger-item.active {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* 照片点击放大 */
+    .photo-lightbox {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); z-index: 9998;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .photo-lightbox.active { opacity: 1; visibility: visible; }
+    .photo-lightbox img {
+      max-width: 90%; max-height: 90%; object-fit: contain;
+      border-radius: 8px; transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+    .photo-lightbox.active img { transform: scale(1); }
+    .photo-lightbox .close-btn {
+      position: absolute; top: 20px; right: 20px;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer; border: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 加载动画 -->
+  <div class="loader-overlay" id="loader">
+    <div class="loader-xi">囍</div>
+    <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+    <div class="loader-text">加载中...</div>
+  </div>
+
+  <!-- 照片放大查看 -->
+  <div class="photo-lightbox" id="lightbox">
+    <button class="close-btn" onclick="closeLightbox()">✕</button>
+    <img src="" alt="" id="lightboxImg">
+  </div>
 
   <!-- 背景 -->
   <div class="bg-container"></div>
   <div class="glow-ball g1"></div>
   <div class="glow-ball g2"></div>
+  <div class="glow-ball g3"></div>
   <canvas id="particles"></canvas>
+  <canvas id="starCanvas"></canvas>
+
+  <!-- 爱心粒子容器 -->
+  <div id="heartsContainer"></div>
+
+  <!-- 花瓣容器 -->
+  <div id="petalsContainer"></div>
+
+  <!-- 流星容器 -->
+  <div id="starsContainer"></div>
 
   <div class="pagination" id="pagination">
     <div class="dot active" data-index="0"></div>
@@ -350,7 +548,7 @@
             <div class="divider-xi">囍</div>
             <div class="name-card" id="cardBride"><div class="role">新娘</div><div class="cn span-2">吴 娇</div><div class="en">WU JIAO</div></div>
           </div>
-          <div class="cover-date">2026.10.03  /  18:08</div>
+          <div class="cover-date">2026.10.03  /  12:08</div>
           <div class="scroll-hint"><span>向上滑动</span><div class="arrow"></div></div>
         </div>
       </div>
@@ -366,9 +564,9 @@
         <div class="section-sub">OUR STORY</div>
         <div class="timeline-wrapper">
           <div class="timeline">
-            <div class="node"><div class="year-bg">2019</div><div class="node-date">2019.09 初见 · 惊鸿</div><div class="node-text">人海中的第一次回眸，像命运写好的底层代码，一眼万年。</div></div>
-            <div class="node"><div class="year-bg">2021</div><div class="node-date">2021.05 相恋 · 同频</div><div class="node-text">确认过眼神，是频率完全契合的人，喜怒哀乐都有了共享进程。</div></div>
-            <div class="node"><div class="year-bg">2023</div><div class="node-date">2023.10 求婚 · 锁定</div><div class="node-text">一枚戒指，一句誓言，锁定了彼此共赴的未来。</div></div>
+            <div class="node"><div class="year-bg">2021</div><div class="node-date">2021.01 初见 · 惊鸿</div><div class="node-text">人海中的第一次回眸，像命运写好的底层代码，一眼万年。</div></div>
+            <div class="node"><div class="year-bg">2021</div><div class="node-date">2021.10 相恋 · 同频</div><div class="node-text">确认过眼神，是频率完全契合的人，喜怒哀乐都有了共享进程。</div></div>
+            <div class="node"><div class="year-bg">2023</div><div class="node-date">2026.08 求婚 · 锁定</div><div class="node-text">一枚戒指，一句誓言，锁定了彼此共赴的未来。</div></div>
           </div>
         </div>
       </div>
@@ -384,11 +582,11 @@
           <div class="photo-item"><img src="https://picsum.photos/seed/a2/200/200" alt=""></div>
           <div class="photo-item"><img src="https://picsum.photos/seed/a3/200/200" alt=""></div>
           <div class="photo-item"><img src="https://picsum.photos/seed/a4/200/200" alt=""></div>
+          <div class="photo-item" style="border: 2px solid #d4af37; box-shadow: 0 8px 25px rgba(212,175,55,0.3);"><img src="images/image1.jpg" alt="我们的囍"></div>
           <div class="photo-item"><img src="https://picsum.photos/seed/a5/200/200" alt=""></div>
           <div class="photo-item"><img src="https://picsum.photos/seed/a6/200/200" alt=""></div>
           <div class="photo-item"><img src="https://picsum.photos/seed/a7/200/200" alt=""></div>
           <div class="photo-item"><img src="https://picsum.photos/seed/a8/200/200" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/seed/a9/200/200" alt=""></div>
         </div>
       </div>
     </section>
@@ -402,6 +600,7 @@
           <div class="arrow-btn left" id="arrowLeft">‹</div>
           <div class="arrow-btn right" id="arrowRight">›</div>
           <div class="gallery-track-4" id="galleryTrack">
+            <div class="gallery-item"><img src="images/image1.jpg" alt=""><div class="tag">囍 · 我们的故事</div></div>
             <div class="gallery-item"><img src="https://picsum.photos/seed/b1/300/400" alt=""><div class="tag">📸 定格·婚纱</div></div>
             <div class="gallery-item"><img src="https://picsum.photos/seed/b2/300/400" alt=""><div class="tag">🌍 足迹·世界</div></div>
             <div class="gallery-item"><img src="https://picsum.photos/seed/b3/300/400" alt=""><div class="tag">☕ 日常·烟火</div></div>
@@ -420,10 +619,10 @@
         <div class="section-title">喜宴坐标</div>
         <div class="section-sub">INVITATION</div>
         <div class="invite-card" id="card3d">
-          <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时</div><div class="info-value">2026年10月3日（周六）<br>农历 八月廿二 18:08</div></div></div>
-          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">杭州市西湖区 · 瑰丽酒店<br>三层 玫瑰宴会厅</div></div></div>
+          <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时</div><div class="info-value">2026年10月3日（周六）<br>农历 八月廿三 12:08</div></div></div>
+          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">新化县上梅街道 · 棘树下</div></div></div>
           <button class="nav-btn" id="navBtn">🧭 导航赴宴</button>
-          <div style="margin-top:14px;text-align:center;font-size:11px;color:rgba(90,45,58,0.3);">点击选择地图APP</div>
+          <div style="margin-top:14px;text-align:center;font-size:11px;color:rgba(255,209,220,0.4);">点击选择地图APP</div>
         </div>
       </div>
     </section>
@@ -444,44 +643,211 @@
 
   <script>
     // ============================================================
-    // 1. 粒子系统（保持不变）
+    // 1. 星空粒子系统（替换原有粒子）
     // ============================================================
     (function() {
-      const canvas = document.getElementById('particles');
+      const canvas = document.getElementById('starCanvas');
       const ctx = canvas.getContext('2d');
       let w, h;
-      const particles = [];
-      const COUNT = 100;
+      const stars = [];
+      const COUNT = 200;
+      let mouseX = -1000, mouseY = -1000;
+
       function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
       window.addEventListener('resize', resize);
       resize();
-      class Particle {
+
+      document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+      document.addEventListener('touchmove', (e) => { if (e.touches.length > 0) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } }, { passive: true });
+
+      class Star {
         constructor() { this.reset(); }
-        reset() { this.x = Math.random()*w; this.y = Math.random()*h; this.size = Math.random()*3+0.5; this.speedX = (Math.random()-0.5)*0.3; this.speedY = (Math.random()-0.5)*0.3; this.opacity = Math.random()*0.6+0.2; this.color = Math.random()>0.6 ? '212,175,55' : '255,182,193'; this.pulse = Math.random()*Math.PI*2; }
-        update() { this.x += this.speedX; this.y += this.speedY; if (this.x<0||this.x>w) this.speedX*=-1; if (this.y<0||this.y>h) this.speedY*=-1; this.pulse += 0.02; }
-        draw() { const glow = Math.sin(this.pulse)*0.2+0.8; ctx.beginPath(); ctx.arc(this.x, this.y, this.size*glow, 0, Math.PI*2); ctx.fillStyle = `rgba(${this.color}, ${this.opacity*glow})`; ctx.shadowColor = 'rgba(212,175,55,0.2)'; ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0; }
+        reset() {
+          this.x = Math.random() * w; this.y = Math.random() * h;
+          this.size = Math.random() * 2 + 0.5;
+          this.speedX = (Math.random() - 0.5) * 0.1;
+          this.speedY = (Math.random() - 0.5) * 0.1;
+          this.opacity = Math.random() * 0.8 + 0.2;
+          this.twinkle = Math.random() * Math.PI * 2;
+          this.twinkleSpeed = Math.random() * 0.02 + 0.01;
+        }
+        update() {
+          this.x += this.speedX; this.y += this.speedY;
+          if (this.x < 0) this.x = w; if (this.x > w) this.x = 0;
+          if (this.y < 0) this.y = h; if (this.y > h) this.y = 0;
+          this.twinkle += this.twinkleSpeed;
+
+          // 鼠标附近的星星变亮
+          const dx = this.x - mouseX; const dy = this.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          this.glow = dist < 100 ? 1.5 : 1;
+        }
+        draw() {
+          const alpha = this.opacity * (0.5 + 0.5 * Math.sin(this.twinkle)) * this.glow;
+          // 十字光芒
+          ctx.beginPath();
+          ctx.moveTo(this.x - this.size * 3, this.y); ctx.lineTo(this.x + this.size * 3, this.y);
+          ctx.moveTo(this.x, this.y - this.size * 3); ctx.lineTo(this.x, this.y + this.size * 3);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.3})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          // 星核
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 220, 150, ${alpha})`;
+          ctx.shadowColor = 'rgba(255, 200, 100, 0.8)';
+          ctx.shadowBlur = this.size * 4;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
       }
-      for (let i=0; i<COUNT; i++) particles.push(new Particle());
-      function drawLines() {
-        for (let i=0; i<particles.length; i++) {
-          for (let j=i+1; j<particles.length; j++) {
-            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < 110) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.strokeStyle = `rgba(212,175,55,${0.06*(1-dist/110)})`; ctx.lineWidth = 0.6; ctx.stroke(); }
+
+      for (let i = 0; i < COUNT; i++) stars.push(new Star());
+
+      // 星座连线
+      function drawConstellations() {
+        for (let i = 0; i < stars.length; i++) {
+          let connections = 0;
+          for (let j = i + 1; j < stars.length && connections < 3; j++) {
+            const dx = stars[i].x - stars[j].x, dy = stars[i].y - stars[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 80) {
+              ctx.beginPath();
+              ctx.moveTo(stars[i].x, stars[i].y);
+              ctx.lineTo(stars[j].x, stars[j].y);
+              ctx.strokeStyle = `rgba(255, 215, 100, ${0.2 * (1 - dist / 80)})`;
+              ctx.lineWidth = 0.3;
+              ctx.stroke();
+              connections++;
+            }
           }
         }
       }
-      function animate() { ctx.clearRect(0,0,w,h); particles.forEach(p=>{p.update(); p.draw();}); drawLines(); requestAnimationFrame(animate); }
+
+      // 流星
+      let meteors = [];
+      function spawnMeteor() {
+        if (Math.random() < 0.005) {
+          meteors.push({
+            x: Math.random() * w, y: -50,
+            vx: (Math.random() - 0.5) * 4 + 2,
+            vy: Math.random() * 3 + 2,
+            len: Math.random() * 80 + 40,
+            life: 1
+          });
+        }
+      }
+      function drawMeteors() {
+        for (let i = meteors.length - 1; i >= 0; i--) {
+          const m = meteors[i];
+          m.x += m.vx; m.y += m.vy; m.life -= 0.015;
+          if (m.life <= 0 || m.x > w + 100 || m.y > h + 100) { meteors.splice(i, 1); continue; }
+          const grad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 3, m.y - m.vy * 3);
+          grad.addColorStop(0, `rgba(255,255,255,${m.life})`);
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.beginPath();
+          ctx.moveTo(m.x, m.y);
+          ctx.lineTo(m.x - m.vx * 3, m.y - m.vy * 3);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        stars.forEach(s => { s.update(); s.draw(); });
+        drawConstellations();
+        spawnMeteor();
+        drawMeteors();
+        requestAnimationFrame(animate);
+      }
       animate();
     })();
 
     // ============================================================
-    // 2. 3D视差（保持不变）
+    // 2. 爱心粒子系统
+    // ============================================================
+    (function() {
+      const container = document.getElementById('heartsContainer');
+      function createHeart() {
+        const heart = document.createElement('div');
+        heart.className = Math.random() > 0.7 ? 'heart-particle gold' : 'heart-particle';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (Math.random() * 6 + 6) + 's';
+        heart.style.animationDelay = (Math.random() * 5) + 's';
+        heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 12000);
+      }
+      for (let i = 0; i < 8; i++) setTimeout(createHeart, i * 1500);
+      setInterval(createHeart, 3000);
+    })();
+
+    // ============================================================
+    // 3. 花瓣飘落系统
+    // ============================================================
+    (function() {
+      const container = document.getElementById('petalsContainer');
+      const types = ['', 'rose', 'peach'];
+      function createPetal() {
+        const petal = document.createElement('div');
+        petal.className = 'petal ' + types[Math.floor(Math.random() * types.length)];
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.animationDuration = (Math.random() * 8 + 8) + 's';
+        petal.style.animationDelay = (Math.random() * 5) + 's';
+        container.appendChild(petal);
+        setTimeout(() => petal.remove(), 16000);
+      }
+      for (let i = 0; i < 12; i++) setTimeout(createPetal, i * 800);
+      setInterval(createPetal, 2000);
+    })();
+
+    // ============================================================
+    // 4. 流星HTML元素
+    // ============================================================
+    (function() {
+      const container = document.getElementById('starsContainer');
+      function createShootingStar() {
+        const star = document.createElement('div');
+        star.className = 'shooting-star';
+        star.style.top = Math.random() * 50 + '%';
+        star.style.left = Math.random() * 50 + '%';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        star.style.animationDelay = (Math.random() * 3) + 's';
+        container.appendChild(star);
+        setTimeout(() => star.remove(), 6000);
+      }
+      setInterval(createShootingStar, 4000);
+    })();
+
+    // ============================================================
+    // 5. 触摸涟漪效果
+    // ============================================================
+    document.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      createRipple(touch.clientX, touch.clientY);
+    }, { passive: true });
+    document.addEventListener('click', (e) => {
+      createRipple(e.clientX, e.clientY);
+    });
+    function createRipple(x, y) {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 800);
+    }
+
+    // ============================================================
+    // 6. 3D视差（增强）
     // ============================================================
     (function() {
       const cover = document.getElementById('cover3d');
       const card3d = document.getElementById('card3d');
       const cards = document.querySelectorAll('.name-card');
-      function applyTilt(element, x, y) { if (!element) return; const rect = element.getBoundingClientRect(); const centerX = rect.left + rect.width/2; const centerY = rect.top + rect.height/2; const deltaX = (x - centerX)/rect.width; const deltaY = (y - centerY)/rect.height; const rotateX = deltaY * -12; const rotateY = deltaX * 12; element.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`; }
+      function applyTilt(element, x, y) { if (!element) return; const rect = element.getBoundingClientRect(); const centerX = rect.left + rect.width/2; const centerY = rect.top + rect.height/2; const deltaX = (x - centerX)/rect.width; const deltaY = (y - centerY)/rect.height; const rotateX = deltaY * -18; const rotateY = deltaX * 18; element.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(15px)`; }
       function resetTilt(element) { if (!element) return; element.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)'; }
       document.addEventListener('mousemove', (e) => { const x=e.clientX, y=e.clientY; applyTilt(cover,x,y); applyTilt(card3d,x,y); cards.forEach(c=>applyTilt(c,x,y)); });
       document.addEventListener('touchmove', (e) => { if (e.touches.length>0) { const x=e.touches[0].clientX, y=e.touches[0].clientY; applyTilt(cover,x,y); applyTilt(card3d,x,y); cards.forEach(c=>applyTilt(c,x,y)); } }, { passive: true });
@@ -489,12 +855,13 @@
     })();
 
     // ============================================================
-    // 3. 滑动引擎（保持不变）
+    // 3. 滑动引擎（优化：速度检测+阻尼效果）
     // ============================================================
     const app = document.getElementById('app');
     const pages = document.querySelectorAll('.page');
     const dots = document.querySelectorAll('.dot');
     let currentIndex = 0, isAnimating = false, startY = 0, isSwiping = false;
+    let startTime = 0, velocity = 0, lastY = 0;
     function getScreenHeight() { return window.innerHeight; }
     function initLayout() { const h = getScreenHeight(); app.style.height = (h * pages.length) + 'px'; pages.forEach(p=>p.style.height = h + 'px'); goToPage(currentIndex, false); }
     initLayout(); window.addEventListener('resize', initLayout);
@@ -506,23 +873,44 @@
       app.style.transform = `translate3d(0, ${translateY}px, 0)`;
       if (animate) { isAnimating = true; setTimeout(() => { isAnimating = false; }, 500); }
       dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+
+      // 触发页面进入动画
+      if (animate) {
+        setTimeout(() => animatePageEnter(currentIndex), 300);
+      }
     }
     function onTouchStart(e) {
-      if (isAnimating) return; const touch = e.touches[0]; startY = touch.clientY;
+      if (isAnimating) return;
+      const touch = e.touches[0]; startY = lastY = touch.clientY; startTime = Date.now();
       const currentPage = pages[currentIndex]; const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
       if (isScrollable) { const atTop = currentPage.scrollTop === 0; const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1; if (atTop || atBottom) isSwiping = true; else isSwiping = false; } else { isSwiping = true; }
       if (isSwiping) { e.preventDefault(); app.style.transition = 'none'; }
     }
     function onTouchMove(e) {
-      if (isAnimating || !isSwiping) return; const touch = e.touches[0]; const diff = touch.clientY - startY;
+      if (isAnimating || !isSwiping) return;
+      const touch = e.touches[0]; const currentY = touch.clientY;
+      const diff = currentY - startY;
+      const dt = Date.now() - startTime;
+      velocity = dt > 0 ? (currentY - lastY) / dt * 1000 : 0;
+      lastY = currentY;
+
       const currentPage = pages[currentIndex]; const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
       if (isScrollable) { const atTop = currentPage.scrollTop === 0; const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1; if ((atTop && diff > 0) || (atBottom && diff < 0)) { e.preventDefault(); } else { return; } } else { e.preventDefault(); }
       let finalDiff = diff; if ((currentIndex === 0 && diff > 0) || (currentIndex === pages.length - 1 && diff < 0)) { finalDiff = diff * 0.3; }
       const translateY = -currentIndex * getScreenHeight() + finalDiff; app.style.transform = `translate3d(0, ${translateY}px, 0)`;
     }
     function onTouchEnd(e) {
-      if (isAnimating || !isSwiping) return; const touch = e.changedTouches[0]; const diff = touch.clientY - startY; const threshold = getScreenHeight() * 0.15;
-      let nextPage = currentIndex; if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1; else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
+      if (isAnimating || !isSwiping) return;
+      isSwiping = false;
+      const touch = e.changedTouches[0]; const diff = touch.clientY - startY;
+      const threshold = getScreenHeight() * 0.15;
+      const velocityThreshold = 800; // 速度阈值，快速滑动时更容易翻页
+      let nextPage = currentIndex;
+      if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1;
+      else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
+      // 快速滑动检测
+      if (velocity < -velocityThreshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1;
+      else if (velocity > velocityThreshold && currentIndex > 0) nextPage = currentIndex - 1;
       goToPage(nextPage, true);
     }
     app.addEventListener('touchstart', onTouchStart, { passive: false });
@@ -643,10 +1031,10 @@
     });
 
     // 地址信息（请替换）
-    const LAT = 30.2741;
-    const LNG = 120.1551;
-    const NAME = '杭州瑰丽酒店';
-    const FULL_ADDR = '杭州市西湖区 · 瑰丽酒店 三层玫瑰宴会厅';
+    const LAT = 27.721203;
+    const LNG = 111.247284;
+    const NAME = '棘树下';
+    const FULL_ADDR = '新化县上梅街道 · 棘树下';
 
     // 改用 location.href 直接跳转，避免微信拦截
     function openMap(url) {
@@ -703,6 +1091,85 @@
         toast.classList.remove('show');
       }, 2500);
     }
+    // ============================================================
+    // 7. 页面进入动画系统
+    // ============================================================
+    function animatePageEnter(index) {
+      const page = pages[index];
+      if (!page) return;
+
+      // 页面内容淡入
+      const content = page.querySelector('.page-content');
+      if (content) {
+        content.classList.remove('active');
+        void content.offsetWidth; // 触发重排
+        content.classList.add('page-enter');
+        setTimeout(() => content.classList.add('active'), 50);
+      }
+
+      // 时间线节点逐个出现
+      const nodes = page.querySelectorAll('.node');
+      nodes.forEach((node, i) => {
+        node.classList.remove('active');
+        node.classList.add('stagger-item');
+        setTimeout(() => node.classList.add('active'), 200 + i * 200);
+      });
+
+      // 照片网格依次出现
+      const photos = page.querySelectorAll('.photo-item');
+      photos.forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.add('stagger-item');
+        setTimeout(() => item.classList.add('active'), 100 + i * 80);
+      });
+
+      // 画廊项
+      const galleryItems = page.querySelectorAll('.gallery-item');
+      galleryItems.forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.add('stagger-item');
+        setTimeout(() => item.classList.add('active'), 150 + i * 100);
+      });
+    }
+
+    // 初始加载完成后隐藏loader并播放第一页动画
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+        animatePageEnter(0);
+      }, 2200);
+    });
+
+    // ============================================================
+    // 8. 照片点击放大
+    // ============================================================
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.add('active');
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+    }
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // 为所有照片添加点击事件
+    document.querySelectorAll('.photo-item img, .gallery-item img').forEach(img => {
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(img.src);
+      });
+    });
+
+    // 初始播放第一页动画
+    setTimeout(() => animatePageEnter(0), 2500);
   </script>
 
 </body>
