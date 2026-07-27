@@ -102,7 +102,7 @@
       z-index: 10;
       width: 100%;
       will-change: transform;
-      transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     /* ===== 页面（支持内部滚动） ===== */
@@ -112,7 +112,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 20px 20px 30px;
+      padding: 15px 20px 20px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
@@ -129,9 +129,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10px 0 30px;
-      min-height: 100%;
-      position: relative;
+      padding: 5px 0 40px;
+      min-height: calc(100% + 20px);
     }
 
     /* ===== 标题组件（粉金渐变 + 发光） ===== */
@@ -143,7 +142,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.2));
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .section-sub {
       font-size: 12px;
@@ -151,7 +150,7 @@
       opacity: 0.7;
       letter-spacing: 6px;
       font-weight: 300;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     /* ===== 第1页：封面（3D卡片视差） ===== */
@@ -164,7 +163,7 @@
     }
     .cover-header {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     .cover-header .pre-title {
       font-size: 12px;
@@ -181,14 +180,12 @@
       text-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
       letter-spacing: 4px;
     }
-
-    /* 名字卡片 */
     .names-container {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 15px;
-      margin: 15px 0 25px;
+      margin: 10px 0 20px;
       width: 100%;
       perspective: 800px;
     }
@@ -198,7 +195,7 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.8);
       border-radius: 20px;
-      padding: 22px 15px;
+      padding: 18px 12px;
       text-align: center;
       box-shadow: 0 20px 50px rgba(139, 0, 0, 0.08), inset 0 0 30px rgba(255, 215, 0, 0.05);
       flex: 1;
@@ -248,20 +245,17 @@
         transform: scale(1.06);
       }
     }
-
     .cover-date {
       font-size: 16px;
       letter-spacing: 8px;
       color: rgba(90, 45, 58, 0.6);
       border-top: 1px solid rgba(212, 175, 55, 0.3);
-      padding-top: 18px;
+      padding-top: 15px;
       font-weight: 300;
     }
-
-    /* 滚动提示 */
     .scroll-hint {
       position: absolute;
-      bottom: 28px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -283,31 +277,23 @@
       opacity: 0.5;
     }
     @keyframes bounceUp {
-      0%,
-      100% {
-        transform: translateX(-50%) translateY(0);
-      }
-      50% {
-        transform: translateX(-50%) translateY(6px);
-      }
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
     }
 
     /* ============================================================
-       第2页：升级版时间线（流光 + 波纹 + 水印年份）
+       第2页：时光长卷（流光+波纹+水印）
        ============================================================ */
     .timeline-wrapper {
       width: 100%;
       position: relative;
     }
-
     .timeline {
       width: 100%;
       max-width: 340px;
       position: relative;
       padding-left: 25px;
     }
-
-    /* 流光竖线：渐变背景上下流动 */
     .timeline::before {
       content: '';
       position: absolute;
@@ -322,21 +308,14 @@
       border-radius: 2px;
     }
     @keyframes flowLine {
-      0% {
-        background-position: 0% 0%;
-      }
-      100% {
-        background-position: 0% 100%;
-      }
+      0% { background-position: 0% 0%; }
+      100% { background-position: 0% 100%; }
     }
-
     .node {
-      margin-bottom: 45px;
+      margin-bottom: 35px;
       position: relative;
       padding-left: 10px;
     }
-
-    /* 节点圆点 + 扩散波纹（雷达扫描效果） */
     .node::before {
       content: '';
       position: absolute;
@@ -350,8 +329,6 @@
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
       z-index: 2;
     }
-
-    /* 波纹光环 */
     .node::after {
       content: '';
       position: absolute;
@@ -364,29 +341,13 @@
       animation: ripple 2s ease-out infinite;
       z-index: 1;
     }
-    /* 每个节点的波纹延迟不同 */
-    .node:nth-child(1)::after {
-      animation-delay: 0s;
-    }
-    .node:nth-child(2)::after {
-      animation-delay: 0.6s;
-    }
-    .node:nth-child(3)::after {
-      animation-delay: 1.2s;
-    }
-
+    .node:nth-child(1)::after { animation-delay: 0s; }
+    .node:nth-child(2)::after { animation-delay: 0.6s; }
+    .node:nth-child(3)::after { animation-delay: 1.2s; }
     @keyframes ripple {
-      0% {
-        transform: scale(0.8);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(2.5);
-        opacity: 0;
-      }
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
     }
-
-    /* 水印年份（超大半透明背景数字） */
     .node .year-bg {
       position: absolute;
       right: -10px;
@@ -401,8 +362,6 @@
       letter-spacing: -4px;
       user-select: none;
     }
-
-    /* 节点文字内容（提升层级） */
     .node-date {
       font-size: 15px;
       color: #d92121;
@@ -419,8 +378,6 @@
       position: relative;
       z-index: 2;
     }
-
-    /* 第二页专属装饰粒子（浮动小图标） */
     .page-1-deco {
       position: absolute;
       font-size: 20px;
@@ -428,85 +385,17 @@
       pointer-events: none;
       animation: floatDeco 6s infinite alternate ease-in-out;
     }
-    .page-1-deco.d1 {
-      top: 10%;
-      left: 5%;
-      animation-delay: 0s;
-    }
-    .page-1-deco.d2 {
-      bottom: 20%;
-      right: 5%;
-      animation-delay: 2s;
-      font-size: 28px;
-    }
-    .page-1-deco.d3 {
-      top: 40%;
-      right: 2%;
-      animation-delay: 4s;
-      font-size: 16px;
-    }
+    .page-1-deco.d1 { top: 10%; left: 5%; animation-delay: 0s; }
+    .page-1-deco.d2 { bottom: 20%; right: 5%; animation-delay: 2s; font-size: 28px; }
+    .page-1-deco.d3 { top: 40%; right: 2%; animation-delay: 4s; font-size: 16px; }
     @keyframes floatDeco {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.1;
-      }
-      100% {
-        transform: translateY(-20px) rotate(15deg);
-        opacity: 0.25;
-      }
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+      100% { transform: translateY(-20px) rotate(15deg); opacity: 0.25; }
     }
 
-    /* ===== 照片网格 ===== */
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      width: 100%;
-      max-width: 360px;
-    }
-    .photo-item {
-      aspect-ratio: 1/1;
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(4px);
-      border-radius: 12px;
-      overflow: hidden;
-      padding: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 8px 25px rgba(139, 0, 0, 0.06);
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      position: relative;
-    }
-    .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-      transition: transform 0.6s ease;
-    }
-    .photo-item:hover img {
-      transform: scale(1.06);
-    }
-    .photo-item::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.15) 50%, transparent 60%);
-      animation: shimmer 5s infinite;
-      pointer-events: none;
-    }
-    @keyframes shimmer {
-      0% {
-        transform: translateX(-100%) translateY(-100%);
-      }
-      100% {
-        transform: translateX(100%) translateY(100%);
-      }
-    }
-
-    /* ===== 横向画廊 ===== */
+    /* ============================================================
+       第3页：鎏金岁月（横向滚动画廊）
+       ============================================================ */
     .gallery-track {
       display: flex;
       gap: 15px;
@@ -516,13 +405,14 @@
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-x;
+      scroll-behavior: smooth;
     }
     .gallery-track::-webkit-scrollbar {
       display: none;
     }
     .gallery-item {
-      flex: 0 0 220px;
-      height: 300px;
+      flex: 0 0 240px;
+      height: 320px;
       background: rgba(255, 255, 255, 0.4);
       backdrop-filter: blur(8px);
       border-radius: 16px;
@@ -532,6 +422,10 @@
       box-shadow: 0 15px 35px rgba(139, 0, 0, 0.08);
       overflow: hidden;
       position: relative;
+      transition: transform 0.3s ease;
+    }
+    .gallery-item:active {
+      transform: scale(0.97);
     }
     .gallery-item img {
       width: 100%;
@@ -553,7 +447,29 @@
       border: 1px solid rgba(255, 255, 255, 0.9);
     }
 
-    /* ===== 邀请卡 ===== */
+    /* ============================================================
+       第4页：光影长情 —— 横向滑动（修正！）
+       ============================================================ */
+    .gallery-track-4 {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      overflow-x: auto;
+      padding: 10px 0 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
+      scroll-behavior: smooth;
+    }
+    .gallery-track-4::-webkit-scrollbar {
+      display: none;
+    }
+    .gallery-track-4 .gallery-item {
+      flex: 0 0 220px;
+      height: 300px;
+    }
+
+    /* ===== 第5页：邀请卡 ===== */
     .invite-card {
       width: 100%;
       max-width: 360px;
@@ -562,10 +478,11 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.8);
       border-radius: 20px;
-      padding: 30px 24px;
+      padding: 28px 22px;
       box-shadow: 0 20px 50px rgba(139, 0, 0, 0.06);
       transition: transform 0.1s ease-out;
       will-change: transform;
+      margin-bottom: 5px;
     }
     .info-row {
       display: flex;
@@ -631,6 +548,10 @@
       transform: scale(0.96);
       filter: brightness(1.1);
     }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
 
     /* ===== 分页指示器 ===== */
     .pagination {
@@ -683,6 +604,98 @@
     }
     .auto-btn:active {
       transform: scale(0.9);
+    }
+
+    /* ===== 地图选择弹窗 ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 30px 30px 0 0;
+      width: 100%;
+      max-width: 420px;
+      padding: 30px 24px 40px;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .modal-overlay.active .modal-box {
+      transform: translateY(0);
+    }
+    .modal-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #5a2d3a;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+    .map-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #5a2d3a;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    .map-option:active {
+      transform: scale(0.97);
+      background: rgba(255,215,0,0.1);
+    }
+    .map-option .icon {
+      font-size: 24px;
+      width: 36px;
+      text-align: center;
+    }
+    .map-option.recommend {
+      background: linear-gradient(90deg, #d92121, #d4af37);
+      color: #fff;
+      border: none;
+    }
+    .map-option.recommend .icon {
+      color: #fff;
+    }
+    .cancel-map {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: none;
+      font-size: 15px;
+      color: rgba(90,45,58,0.4);
+      margin-top: 10px;
+      cursor: pointer;
+      text-align: center;
     }
   </style>
 </head>
@@ -738,34 +751,26 @@
       </div>
     </section>
 
-    <!-- ============================================================
-    第2页：升级版（流光竖线 + 雷达波纹 + 水印年份）
-    ============================================================ -->
+    <!-- 第2页 -->
     <section class="page" id="page1">
-      <!-- 第二页专属装饰小图标 -->
       <div class="page-1-deco d1">✦</div>
       <div class="page-1-deco d2">✧</div>
       <div class="page-1-deco d3">◇</div>
-
       <div class="page-content">
         <div class="section-title">时光长卷</div>
         <div class="section-sub">OUR STORY</div>
-
         <div class="timeline-wrapper">
           <div class="timeline">
-            <!-- 节点 1 -->
             <div class="node">
               <div class="year-bg">2019</div>
               <div class="node-date">2019.09 初见 · 惊鸿</div>
               <div class="node-text">人海中的第一次回眸，像命运写好的底层代码，一眼万年。</div>
             </div>
-            <!-- 节点 2 -->
             <div class="node">
               <div class="year-bg">2021</div>
               <div class="node-date">2021.05 相恋 · 同频</div>
               <div class="node-text">确认过眼神，是频率完全契合的人，喜怒哀乐都有了共享进程。</div>
             </div>
-            <!-- 节点 3 -->
             <div class="node">
               <div class="year-bg">2023</div>
               <div class="node-date">2023.10 求婚 · 锁定</div>
@@ -776,57 +781,78 @@
       </div>
     </section>
 
-    <!-- 第3页 -->
+    <!-- 第3页：鎏金岁月（横向） -->
     <section class="page" id="page2">
       <div class="page-content">
         <div class="section-title">鎏金岁月</div>
-        <div class="section-sub">MOMENTS</div>
-        <div class="photo-grid">
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=21" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=22" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=23" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=24" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=25" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=26" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=27" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=28" alt=""></div>
-          <div class="photo-item"><img src="https://picsum.photos/200/200?random=29" alt=""></div>
+        <div class="section-sub">SWEET MOMENTS</div>
+        <div class="gallery-track">
+          <div class="gallery-item"><img src="https://picsum.photos/seed/a1/400/500" alt=""><div class="tag">📸 心动瞬间</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/a2/400/500" alt=""><div class="tag">🌹 浪漫时刻</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/a3/400/500" alt=""><div class="tag">💫 星光约定</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/a4/400/500" alt=""><div class="tag">🍾 庆祝瞬间</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/a5/400/500" alt=""><div class="tag">💕 甜蜜日常</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/a6/400/500" alt=""><div class="tag">✨ 永恒记忆</div></div>
         </div>
       </div>
     </section>
 
-    <!-- 第4页 -->
+    <!-- ============================================================
+    第4页：光影长情 —— 横向滑动（修正！）
+    ============================================================ -->
     <section class="page" id="page3">
       <div class="page-content">
         <div class="section-title">光影长情</div>
         <div class="section-sub">GALLERY</div>
-        <div class="gallery-track">
-          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=30" alt=""><div class="tag">📸 定格 · 婚纱</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=31" alt=""><div class="tag">🌍 足迹 · 世界</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=32" alt=""><div class="tag">☕ 日常 · 烟火</div></div>
-          <div class="gallery-item"><img src="https://picsum.photos/300/400?random=33" alt=""><div class="tag">💍 承诺 · 戒指</div></div>
+        <div class="gallery-track-4">
+          <div class="gallery-item"><img src="https://picsum.photos/seed/b1/300/400" alt=""><div class="tag">📸 定格·婚纱</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/b2/300/400" alt=""><div class="tag">🌍 足迹·世界</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/b3/300/400" alt=""><div class="tag">☕ 日常·烟火</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/b4/300/400" alt=""><div class="tag">💍 承诺·戒指</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/b5/300/400" alt=""><div class="tag">🎬 电影感</div></div>
+          <div class="gallery-item"><img src="https://picsum.photos/seed/b6/300/400" alt=""><div class="tag">✨ 闪耀时刻</div></div>
         </div>
       </div>
     </section>
 
-    <!-- 第5页 -->
+    <!-- 第5页：喜宴坐标 -->
     <section class="page" id="page4">
-      <div class="page-content" style="padding-bottom:50px;">
+      <div class="page-content" style="padding-bottom:60px;">
         <div class="section-title">喜宴坐标</div>
         <div class="section-sub">INVITATION</div>
         <div class="invite-card" id="card3d">
           <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时</div><div class="info-value">2026年10月3日（周六）<br>农历 八月廿三 12:08</div></div></div>
-          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">新化县上梅街道 · 棘树下<br>家里</div></div></div>
-          <button class="nav-btn" id="navBtn">🧭 导航赴宴（系统地图）</button>
-          <div style="margin-top:14px;text-align:center;font-size:11px;color:rgba(90,45,58,0.3);">点击自动调用手机原生地图</div>
+          <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地</div><div class="info-value">新化县上梅街道 · 棘树下</div></div></div>
+          <button class="nav-btn" id="navBtn">🧭 导航赴宴</button>
+          <div style="margin-top:14px;text-align:center;font-size:11px;color:rgba(90,45,58,0.3);">点击选择地图APP</div>
         </div>
       </div>
     </section>
   </div>
 
+  <!-- ===== 地图选择弹窗 ===== -->
+  <div class="modal-overlay" id="mapModal">
+    <div class="modal-box">
+      <div class="modal-title">选择导航地图</div>
+      <div class="map-option recommend" id="mapTencent">
+        <span class="icon">💬</span> 腾讯地图（推荐）
+      </div>
+      <div class="map-option" id="mapAmap">
+        <span class="icon">🗺️</span> 高德地图
+      </div>
+      <div class="map-option" id="mapBaidu">
+        <span class="icon">🐾</span> 百度地图
+      </div>
+      <div class="map-option" id="mapApple">
+        <span class="icon">🍎</span> 苹果地图 (iOS)
+      </div>
+      <button class="cancel-map" id="closeMapModal">取消</button>
+    </div>
+  </div>
+
   <script>
     // ============================================================
-    // 1. 升级版粒子系统（粉金流光）
+    // 1. 粒子系统
     // ============================================================
     (function() {
       const canvas = document.getElementById('particles');
@@ -883,8 +909,8 @@
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 110) {
               ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.moveTo(particles[i].x, particles[j].x);
+              ctx.lineTo(particles[i].y, particles[j].y);
               ctx.strokeStyle = `rgba(212, 175, 55, ${0.06 * (1 - dist / 110)})`;
               ctx.lineWidth = 0.6;
               ctx.stroke();
@@ -903,7 +929,7 @@
     })();
 
     // ============================================================
-    // 2. 3D 视差追踪
+    // 2. 3D 视差
     // ============================================================
     (function() {
       const cover = document.getElementById('cover3d');
@@ -980,15 +1006,16 @@
       if (index >= pages.length) index = pages.length - 1;
       currentIndex = index;
       const translateY = -currentIndex * getScreenHeight();
-      app.style.transition = animate ? 'transform 0.65s cubic-bezier(0.23, 1, 0.32, 1)' : 'none';
+      app.style.transition = animate ? 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)' : 'none';
       app.style.transform = `translate3d(0, ${translateY}px, 0)`;
       if (animate) {
         isAnimating = true;
-        setTimeout(() => { isAnimating = false; }, 700);
+        setTimeout(() => { isAnimating = false; }, 500);
       }
       dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
     }
 
+    // 触摸事件
     function onTouchStart(e) {
       if (isAnimating) return;
       const touch = e.touches[0];
@@ -1099,11 +1126,12 @@
     });
 
     // ============================================================
-    // 4. 自动播放
+    // 4. 自动播放（3秒）
     // ============================================================
     let autoTimer = null;
     let isAutoPlaying = true;
     const autoBtn = document.getElementById('autoBtn');
+    const AUTO_INTERVAL = 3000;
 
     function startAuto() {
       isAutoPlaying = true;
@@ -1112,7 +1140,7 @@
       autoTimer = setInterval(() => {
         if (currentIndex < pages.length - 1) goToPage(currentIndex + 1, true);
         else pauseAuto();
-      }, 4000);
+      }, AUTO_INTERVAL);
     }
 
     function pauseAuto() {
@@ -1128,34 +1156,44 @@
     startAuto();
 
     // ============================================================
-    // 5. 原生系统地图导航
+    // 5. 导航弹窗（解决微信内无法系统选择的问题）
     // ============================================================
     const navBtn = document.getElementById('navBtn');
+    const mapModal = document.getElementById('mapModal');
 
-    navBtn.addEventListener('click', function() {
-      const lat = 27.721203;
-      const lng = 111.247284;
-      const name = '棘树下';
+    navBtn.addEventListener('click', () => {
+      mapModal.classList.add('active');
+      pauseAuto();
+    });
 
-      const isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      const isAndroid = /Android/.test(navigator.userAgent);
+    document.getElementById('closeMapModal').addEventListener('click', () => {
+      mapModal.classList.remove('active');
+    });
+    mapModal.addEventListener('click', (e) => {
+      if (e.target === mapModal) mapModal.classList.remove('active');
+    });
 
-      if (isiOS) {
-        window.location.href = `geo:${lat},${lng}?q=${encodeURIComponent(name)}`;
-        setTimeout(() => {
-          window.location.href = `http://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(name)}`;
-        }, 600);
-      } else if (isAndroid) {
-        window.location.href = `geo:${lat},${lng}?q=${encodeURIComponent(name)}`;
-        setTimeout(() => {
-          window.location.href =
-            `intent://maps/directions?mode=driving&destination=${lat},${lng}#Intent;scheme=google.navigation;package=com.google.android.apps.maps;end`;
-        }, 600);
-      } else {
-        window.open(
-          `https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(name)}&tocoord=${lat},${lng}&referer=Wedding`
-          );
-      }
+    // 定义坐标和名称
+    const LAT = 27.721203;
+    const LNG = 111.247284;
+    const NAME = '棘树下';
+
+    function openMap(url) {
+      window.open(url, '_blank');
+      mapModal.classList.remove('active');
+    }
+
+    document.getElementById('mapTencent').addEventListener('click', () => {
+      openMap(`https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(NAME)}&tocoord=${LAT},${LNG}&referer=Wedding`);
+    });
+    document.getElementById('mapAmap').addEventListener('click', () => {
+      openMap(`https://uri.amap.com/navigation?to=${LNG},${LAT},${encodeURIComponent(NAME)}&mode=car&coordinate=gaode&callnative=1`);
+    });
+    document.getElementById('mapBaidu').addEventListener('click', () => {
+      openMap(`https://api.map.baidu.com/direction?destination=latlng:${LAT},${LNG}|name:${encodeURIComponent(NAME)}&mode=driving&output=html`);
+    });
+    document.getElementById('mapApple').addEventListener('click', () => {
+      openMap(`http://maps.apple.com/?ll=${LAT},${LNG}&q=${encodeURIComponent(NAME)}`);
     });
   </script>
 
