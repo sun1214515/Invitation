@@ -5,417 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>全息粉金 · 科技婚礼请柬</title>
   <style>
-    /* ===== 浪漫粉金 + 科技感基础 ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html,
-    body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%; width: 100%; overflow: hidden;
       font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
-      background: #fff5f7;
-      color: #5a2d3a;
-      touch-action: none;
-      overscroll-behavior: none;
+      background: #fff5f7; color: #5a2d3a;
+      touch-action: none; overscroll-behavior: none;
     }
-
-    /* ===== 动态流光背景 ===== */
     .bg-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at 20% 30%, #fff0f5 0%, #fce4ec 40%, #f8c8d8 100%);
       z-index: 0;
     }
     .bg-container::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(255, 215, 0, 0.08) 25%, transparent 50%, rgba(255, 105, 180, 0.08) 75%, transparent 100%);
-      animation: spinBg 30s linear infinite;
-      pointer-events: none;
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: conic-gradient(from 0deg at 50% 50%, transparent 0%, rgba(255,215,0,0.08) 25%, transparent 50%, rgba(255,105,180,0.08) 75%, transparent 100%);
+      animation: spinBg 30s linear infinite; pointer-events: none;
     }
-    @keyframes spinBg {
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spinBg { 100% { transform: rotate(360deg); } }
     .glow-ball {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 1;
+      position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 1;
       animation: floatGlow 10s infinite alternate ease-in-out;
     }
-    .glow-ball.g1 {
-      width: 400px;
-      height: 400px;
-      background: #ffb6c1;
-      top: -10%;
-      left: -10%;
-      opacity: 0.4;
-    }
-    .glow-ball.g2 {
-      width: 500px;
-      height: 500px;
-      background: #ffd700;
-      bottom: -20%;
-      right: -10%;
-      opacity: 0.25;
-      animation-delay: 4s;
-    }
-    @keyframes floatGlow {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, 40px) scale(1.2); }
-    }
-
-    /* ===== 粒子 Canvas ===== */
-    #particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    /* ===== 主容器 ===== */
-    #app {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      will-change: transform;
-      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    /* ===== 页面 ===== */
+    .glow-ball.g1 { width: 400px; height: 400px; background: #ffb6c1; top: -10%; left: -10%; opacity: 0.4; }
+    .glow-ball.g2 { width: 500px; height: 500px; background: #ffd700; bottom: -20%; right: -10%; opacity: 0.25; animation-delay: 4s; }
+    @keyframes floatGlow { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,40px) scale(1.2); } }
+    #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+    #app { position: relative; z-index: 10; width: 100%; will-change: transform; transition: transform 0.5s cubic-bezier(0.23,1,0.32,1); }
     .page {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 15px 20px 20px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
-      scroll-behavior: smooth;
-      background: transparent;
-      position: relative;
+      width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding: 15px 20px 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y;
+      scroll-behavior: smooth; background: transparent; position: relative;
     }
     .page::-webkit-scrollbar { display: none; }
-    .page-content {
-      width: 100%;
-      max-width: 420px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 5px 0 40px;
-      min-height: calc(100% + 20px);
-    }
-
-    .section-title {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 6px;
-      background: linear-gradient(135deg, #d92121, #d4af37);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.2));
-      margin-bottom: 2px;
-    }
-    .section-sub {
-      font-size: 12px;
-      color: #d4af37;
-      opacity: 0.7;
-      letter-spacing: 6px;
-      font-weight: 300;
-      margin-bottom: 20px;
-    }
-
-    /* ===== 第1页：封面 ===== */
-    .cover-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      transition: transform 0.1s ease-out;
-    }
-    .cover-header {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .cover-header .pre-title {
-      font-size: 12px;
-      letter-spacing: 8px;
-      color: #d4af37;
-      opacity: 0.6;
-    }
-    .cover-header .main-title {
-      font-size: 38px;
-      font-weight: 900;
-      background: linear-gradient(135deg, #8b0000, #d4af37);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
-      letter-spacing: 4px;
-    }
-    .names-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      margin: 10px 0 20px;
-      width: 100%;
-      perspective: 800px;
-    }
-    .name-card {
-      background: rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 18px 12px;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(139, 0, 0, 0.08), inset 0 0 30px rgba(255, 215, 0, 0.05);
-      flex: 1;
-      max-width: 150px;
-      transition: all 0.3s ease;
-      will-change: transform;
-    }
-    .name-card .role {
-      font-size: 10px;
-      color: #d4af37;
-      opacity: 0.7;
-      letter-spacing: 4px;
-      font-weight: 600;
-    }
-    .name-card .cn {
-      font-size: 34px;
-      font-weight: 900;
-      color: #5a2d3a;
-      letter-spacing: 4px;
-      line-height: 1.3;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
+    .page-content { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; padding: 5px 0 40px; min-height: calc(100% + 20px); }
+    .section-title { font-size: 28px; font-weight: 700; letter-spacing: 6px; background: linear-gradient(135deg, #d92121, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(212,175,55,0.2)); margin-bottom: 2px; }
+    .section-sub { font-size: 12px; color: #d4af37; opacity: 0.7; letter-spacing: 6px; font-weight: 300; margin-bottom: 20px; }
+    /* 第1页 */
+    .cover-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; transition: transform 0.1s ease-out; }
+    .cover-header { text-align: center; margin-bottom: 10px; }
+    .cover-header .pre-title { font-size: 12px; letter-spacing: 8px; color: #d4af37; opacity: 0.6; }
+    .cover-header .main-title { font-size: 38px; font-weight: 900; background: linear-gradient(135deg, #8b0000, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 40px rgba(212,175,55,0.2); letter-spacing: 4px; }
+    .names-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0 20px; width: 100%; perspective: 800px; }
+    .name-card { background: rgba(255,255,255,0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.8); border-radius: 20px; padding: 18px 12px; text-align: center; box-shadow: 0 20px 50px rgba(139,0,0,0.08), inset 0 0 30px rgba(255,215,0,0.05); flex: 1; max-width: 150px; transition: all 0.3s ease; will-change: transform; }
+    .name-card .role { font-size: 10px; color: #d4af37; opacity: 0.7; letter-spacing: 4px; font-weight: 600; }
+    .name-card .cn { font-size: 34px; font-weight: 900; color: #5a2d3a; letter-spacing: 4px; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .name-card .cn.span-2 { letter-spacing: 10px; }
-    .name-card .en {
-      font-size: 10px;
-      color: rgba(90, 45, 58, 0.4);
-      letter-spacing: 2px;
-      margin-top: 4px;
-    }
-    .divider-xi {
-      font-size: 48px;
-      font-weight: 900;
-      color: #d92121;
-      text-shadow: 0 0 30px rgba(217, 33, 33, 0.2), 0 0 60px rgba(212, 175, 55, 0.1);
-      animation: pulseGold 3s infinite alternate;
-      padding: 0 5px;
-    }
-    @keyframes pulseGold {
-      0% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.2); transform: scale(1); }
-      100% { text-shadow: 0 0 50px rgba(212, 175, 55, 0.5), 0 0 100px rgba(217, 33, 33, 0.2); transform: scale(1.06); }
-    }
-    .cover-date {
-      font-size: 16px;
-      letter-spacing: 8px;
-      color: rgba(90, 45, 58, 0.6);
-      border-top: 1px solid rgba(212, 175, 55, 0.3);
-      padding-top: 15px;
-      font-weight: 300;
-    }
-    .scroll-hint {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: rgba(212, 175, 55, 0.5);
-      font-size: 11px;
-      letter-spacing: 2px;
-      animation: bounceUp 2s infinite;
-      pointer-events: none;
-    }
-    .scroll-hint .arrow {
-      width: 14px;
-      height: 14px;
-      border-right: 2px solid #d4af37;
-      border-bottom: 2px solid #d4af37;
-      transform: rotate(45deg);
-      margin-top: 5px;
-      opacity: 0.5;
-    }
-    @keyframes bounceUp {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(6px); }
-    }
-
-    /* ===== 第2页：时光长卷 ===== */
+    .name-card .en { font-size: 10px; color: rgba(90,45,58,0.4); letter-spacing: 2px; margin-top: 4px; }
+    .divider-xi { font-size: 48px; font-weight: 900; color: #d92121; text-shadow: 0 0 30px rgba(217,33,33,0.2), 0 0 60px rgba(212,175,55,0.1); animation: pulseGold 3s infinite alternate; padding: 0 5px; }
+    @keyframes pulseGold { 0% { text-shadow: 0 0 20px rgba(212,175,55,0.2); transform: scale(1); } 100% { text-shadow: 0 0 50px rgba(212,175,55,0.5), 0 0 100px rgba(217,33,33,0.2); transform: scale(1.06); } }
+    .cover-date { font-size: 16px; letter-spacing: 8px; color: rgba(90,45,58,0.6); border-top: 1px solid rgba(212,175,55,0.3); padding-top: 15px; font-weight: 300; }
+    .scroll-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; color: rgba(212,175,55,0.5); font-size: 11px; letter-spacing: 2px; animation: bounceUp 2s infinite; pointer-events: none; }
+    .scroll-hint .arrow { width: 14px; height: 14px; border-right: 2px solid #d4af37; border-bottom: 2px solid #d4af37; transform: rotate(45deg); margin-top: 5px; opacity: 0.5; }
+    @keyframes bounceUp { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+    /* 第2页 */
     .timeline-wrapper { width: 100%; position: relative; }
-    .timeline {
-      width: 100%;
-      max-width: 340px;
-      position: relative;
-      padding-left: 25px;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 6px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(to bottom, #d4af37, #ffb6c1, #d92121, #d4af37);
-      background-size: 100% 300%;
-      animation: flowLine 3s linear infinite;
-      box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
-      border-radius: 2px;
-    }
-    @keyframes flowLine {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 0% 100%; }
-    }
-    .node {
-      margin-bottom: 35px;
-      position: relative;
-      padding-left: 10px;
-    }
-    .node::before {
-      content: '';
-      position: absolute;
-      left: -22px;
-      top: 4px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #fff;
-      border: 2px solid #d4af37;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-      z-index: 2;
-    }
-    .node::after {
-      content: '';
-      position: absolute;
-      left: -26px;
-      top: 0px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      animation: ripple 2s ease-out infinite;
-      z-index: 1;
-    }
-    .node:nth-child(1)::after { animation-delay: 0s; }
-    .node:nth-child(2)::after { animation-delay: 0.6s; }
-    .node:nth-child(3)::after { animation-delay: 1.2s; }
-    @keyframes ripple {
-      0% { transform: scale(0.8); opacity: 1; }
-      100% { transform: scale(2.5); opacity: 0; }
-    }
-    .node .year-bg {
-      position: absolute;
-      right: -10px;
-      top: -20px;
-      font-size: 64px;
-      font-weight: 900;
-      color: rgba(212, 175, 55, 0.06);
-      pointer-events: none;
-      z-index: 0;
-      line-height: 1;
-      font-family: 'Helvetica Neue', monospace;
-      letter-spacing: -4px;
-      user-select: none;
-    }
-    .node-date {
-      font-size: 15px;
-      color: #d92121;
-      font-weight: 700;
-      letter-spacing: 1px;
-      position: relative;
-      z-index: 2;
-    }
-    .node-text {
-      font-size: 14px;
-      line-height: 1.7;
-      color: rgba(90, 45, 58, 0.8);
-      font-weight: 400;
-      position: relative;
-      z-index: 2;
-    }
-    .page-1-deco {
-      position: absolute;
-      font-size: 20px;
-      opacity: 0.15;
-      pointer-events: none;
-      animation: floatDeco 6s infinite alternate ease-in-out;
-    }
-    .page-1-deco.d1 { top: 10%; left: 5%; animation-delay: 0s; }
-    .page-1-deco.d2 { bottom: 20%; right: 5%; animation-delay: 2s; font-size: 28px; }
-    .page-1-deco.d3 { top: 40%; right: 2%; animation-delay: 4s; font-size: 16px; }
-    @keyframes floatDeco {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
-      100% { transform: translateY(-20px) rotate(15deg); opacity: 0.25; }
-    }
-
-    /* ===== 第3页：9宫格 ===== */
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      width: 100%;
-      max-width: 360px;
-    }
-    .photo-item {
-      aspect-ratio: 1/1;
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(4px);
-      border-radius: 12px;
-      overflow: hidden;
-      padding: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 8px 25px rgba(139, 0, 0, 0.06);
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      position: relative;
-    }
-    .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-      transition: transform 0.6s ease;
-    }
+    .timeline { width: 100%; max-width: 340px; position: relative; padding-left: 25px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #d4af37, #ffb6c1, #d92121, #d4af37); background-size: 100% 300%; animation: flowLine 3s linear infinite; box-shadow: 0 0 12px rgba(212,175,55,0.3); border-radius: 2px; }
+    @keyframes flowLine { 0% { background-position: 0% 0%; } 100% { background-position: 0% 100%; } }
+    .node { margin-bottom: 35px; position: relative; padding-left: 10px; }
+    .node::before { content: ''; position: absolute; left: -22px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.4); z-index: 2; }
+    .node::after { content: ''; position: absolute; left: -26px; top: 0px; width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(212,175,55,0.3); animation: ripple 2s ease-out infinite; z-index: 1; }
+    .node:nth-child(1)::after { animation-delay: 0s; } .node:nth-child(2)::after { animation-delay: 0.6s; } .node:nth-child(3)::after { animation-delay: 1.2s; }
+    @keyframes ripple { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+    .node .year-bg { position: absolute; right: -10px; top: -20px; font-size: 64px; font-weight: 900; color: rgba(212,175,55,0.06); pointer-events: none; z-index: 0; line-height: 1; font-family: 'Helvetica Neue', monospace; letter-spacing: -4px; user-select: none; }
+    .node-date { font-size: 15px; color: #d92121; font-weight: 700; letter-spacing: 1px; position: relative; z-index: 2; }
+    .node-text { font-size: 14px; line-height: 1.7; color: rgba(90,45,58,0.8); font-weight: 400; position: relative; z-index: 2; }
+    .page-1-deco { position: absolute; font-size: 20px; opacity: 0.15; pointer-events: none; animation: floatDeco 6s infinite alternate ease-in-out; }
+    .page-1-deco.d1 { top: 10%; left: 5%; animation-delay: 0s; } .page-1-deco.d2 { bottom: 20%; right: 5%; animation-delay: 2s; font-size: 28px; } .page-1-deco.d3 { top: 40%; right: 2%; animation-delay: 4s; font-size: 16px; }
+    @keyframes floatDeco { 0% { transform: translateY(0) rotate(0deg); opacity: 0.1; } 100% { transform: translateY(-20px) rotate(15deg); opacity: 0.25; } }
+    /* 第3页 9宫格 */
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 360px; }
+    .photo-item { aspect-ratio: 1/1; background: rgba(255,255,255,0.5); backdrop-filter: blur(4px); border-radius: 12px; overflow: hidden; padding: 4px; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 8px 25px rgba(139,0,0,0.06); transition: all 0.4s cubic-bezier(0.23,1,0.32,1); position: relative; }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; transition: transform 0.6s ease; }
     .photo-item:hover img { transform: scale(1.06); }
-    .photo-item::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.15) 50%, transparent 60%);
-      animation: shimmer 5s infinite;
-      pointer-events: none;
-    }
-    @keyframes shimmer {
-      0% { transform: translateX(-100%) translateY(-100%); }
-      100% { transform: translateX(100%) translateY(100%); }
-    }
+    .photo-item::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(255,215,0,0.15) 50%, transparent 60%); animation: shimmer 5s infinite; pointer-events: none; }
+    @keyframes shimmer { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
 
-    /* ============================================================
-       第4页：横向画廊 —— 增加左右箭头按钮
-       ============================================================ */
+    /* ===== 第4页：横向画廊（箭头修复） ===== */
     .gallery-wrapper {
       width: 100%;
       max-width: 360px;
@@ -438,13 +105,13 @@
     .gallery-track-4 .gallery-item {
       flex: 0 0 220px;
       height: 300px;
-      background: rgba(255, 255, 255, 0.4);
+      background: rgba(255,255,255,0.4);
       backdrop-filter: blur(8px);
       border-radius: 16px;
       scroll-snap-align: center;
       padding: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 15px 35px rgba(139, 0, 0, 0.08);
+      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 15px 35px rgba(139,0,0,0.08);
       overflow: hidden;
       position: relative;
       transition: transform 0.2s ease;
@@ -463,58 +130,54 @@
       position: absolute;
       bottom: 18px;
       left: 18px;
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255,255,255,0.7);
       backdrop-filter: blur(8px);
       padding: 4px 16px;
       border-radius: 20px;
       font-size: 12px;
       color: #d92121;
       font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255,255,255,0.9);
       pointer-events: none;
     }
 
-    /* 左右箭头按钮（透明，粉金点缀） */
+    /* 左右箭头按钮（透明，白色箭头） */
     .arrow-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: transparent; /* 完全透明 */
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      color: #d92121;
+      font-size: 32px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.8); /* 半透明白色 */
       cursor: pointer;
-      transition: all 0.2s ease;
       z-index: 5;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
       user-select: none;
       -webkit-user-select: none;
+      text-shadow: 0 0 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s, color 0.2s;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .arrow-btn:active {
-      transform: translateY(-50%) scale(0.9);
-      background: rgba(255, 255, 255, 0.5);
+      transform: translateY(-50%) scale(0.85);
+      color: #ffffff;
     }
-    .arrow-btn.left {
-      left: -6px;
-    }
-    .arrow-btn.right {
-      right: -6px;
-    }
-    /* 在小屏设备上稍微内缩 */
+    .arrow-btn.left { left: -8px; }
+    .arrow-btn.right { right: -8px; }
     @media (max-width: 400px) {
       .arrow-btn.left { left: 2px; }
       .arrow-btn.right { right: 2px; }
     }
 
-    /* 滚动指示器（小圆点） */
+    /* 滚动指示器 */
     .scroll-dots {
       display: flex;
       justify-content: center;
@@ -526,258 +189,133 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(90, 45, 58, 0.2);
+      background: rgba(90,45,58,0.2);
       transition: all 0.3s;
       flex-shrink: 0;
       cursor: pointer;
     }
     .scroll-dots span.active {
       background: #d92121;
-      box-shadow: 0 0 12px rgba(217, 33, 33, 0.4);
+      box-shadow: 0 0 12px rgba(217,33,33,0.4);
       transform: scale(1.4);
     }
 
-    /* ===== 第5页：邀请卡 ===== */
+    /* 第5页 邀请卡 */
     .invite-card {
-      width: 100%;
-      max-width: 360px;
-      background: rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 28px 22px;
-      box-shadow: 0 20px 50px rgba(139, 0, 0, 0.06);
-      transition: transform 0.1s ease-out;
-      will-change: transform;
-      margin-bottom: 5px;
+      width: 100%; max-width: 360px;
+      background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.8); border-radius: 20px;
+      padding: 28px 22px; box-shadow: 0 20px 50px rgba(139,0,0,0.06);
+      transition: transform 0.1s ease-out; will-change: transform; margin-bottom: 5px;
     }
-    .info-row {
-      display: flex;
-      margin-bottom: 22px;
-      align-items: flex-start;
-    }
+    .info-row { display: flex; margin-bottom: 22px; align-items: flex-start; }
     .info-icon {
-      width: 38px;
-      height: 38px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #d92121, #d4af37);
-      border-radius: 50%;
-      color: #fff;
-      font-size: 16px;
-      margin-right: 15px;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(217, 33, 33, 0.2);
+      width: 38px; height: 38px; display: flex; justify-content: center; align-items: center;
+      background: linear-gradient(135deg, #d92121, #d4af37); border-radius: 50%;
+      color: #fff; font-size: 16px; margin-right: 15px; flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(217,33,33,0.2);
     }
-    .info-label {
-      font-size: 10px;
-      color: #d4af37;
-      opacity: 0.7;
-      letter-spacing: 2px;
-      font-weight: 600;
-    }
-    .info-value {
-      font-size: 16px;
-      font-weight: 700;
-      color: #5a2d3a;
-      line-height: 1.5;
-    }
+    .info-label { font-size: 10px; color: #d4af37; opacity: 0.7; letter-spacing: 2px; font-weight: 600; }
+    .info-value { font-size: 16px; font-weight: 700; color: #5a2d3a; line-height: 1.5; }
     .nav-btn {
-      width: 100%;
-      padding: 16px;
+      width: 100%; padding: 16px;
       background: linear-gradient(90deg, #d92121, #d4af37);
-      border: none;
-      border-radius: 50px;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 30px rgba(217, 33, 33, 0.25);
-      margin-top: 8px;
-      position: relative;
-      overflow: hidden;
+      border: none; border-radius: 50px;
+      color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 4px;
+      cursor: pointer; transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(217,33,33,0.25);
+      margin-top: 8px; position: relative; overflow: hidden;
     }
     .nav-btn::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.3) 50%, transparent 60%);
-      animation: shimmer 3s infinite;
-      pointer-events: none;
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+      animation: shimmer 3s infinite; pointer-events: none;
     }
     .nav-btn:active { transform: scale(0.96); filter: brightness(1.1); }
-    @keyframes shimmer {
-      0% { transform: translateX(-100%) translateY(-100%); }
-      100% { transform: translateX(100%) translateY(100%); }
-    }
+    @keyframes shimmer { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
 
-    /* ===== 分页指示器 ===== */
+    /* 分页 */
     .pagination {
-      position: fixed;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      z-index: 100;
+      position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 14px; z-index: 100;
     }
     .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(90, 45, 58, 0.2);
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      cursor: pointer;
-      border: 1px solid transparent;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(90,45,58,0.2);
+      transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+      cursor: pointer; border: 1px solid transparent;
     }
     .dot.active {
-      background: #d92121;
-      box-shadow: 0 0 20px rgba(217, 33, 33, 0.4);
-      transform: scale(2);
-      border-color: #d4af37;
+      background: #d92121; box-shadow: 0 0 20px rgba(217,33,33,0.4);
+      transform: scale(2); border-color: #d4af37;
     }
-
-    /* ===== 自动播放按钮 ===== */
     .auto-btn {
-      position: fixed;
-      bottom: 30px;
-      right: 20px;
-      z-index: 100;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 18px;
-      color: #d92121;
-      box-shadow: 0 4px 15px rgba(139, 0, 0, 0.06);
-      cursor: pointer;
-      transition: 0.2s;
+      position: fixed; bottom: 30px; right: 20px; z-index: 100;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.8);
+      display: flex; justify-content: center; align-items: center;
+      font-size: 18px; color: #d92121;
+      box-shadow: 0 4px 15px rgba(139,0,0,0.06);
+      cursor: pointer; transition: 0.2s;
     }
     .auto-btn:active { transform: scale(0.9); }
 
-    /* ===== 地图选择弹窗 ===== */
+    /* 地图弹窗 */
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 999; opacity: 0; visibility: hidden;
       transition: all 0.3s ease;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+      display: flex; align-items: flex-end; justify-content: center;
     }
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal-box {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-radius: 30px 30px 0 0;
-      width: 100%;
-      max-width: 420px;
+      width: 100%; max-width: 420px;
       padding: 30px 24px 40px;
       box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
       transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
     }
     .modal-overlay.active .modal-box { transform: translateY(0); }
     .modal-title {
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #5a2d3a;
-      margin-bottom: 20px;
-      letter-spacing: 2px;
+      text-align: center; font-size: 18px; font-weight: 700;
+      color: #5a2d3a; margin-bottom: 20px; letter-spacing: 2px;
     }
     .map-option {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
-      padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+      width: 100%; padding: 16px 20px;
       background: rgba(255,255,255,0.5);
       border: 1px solid rgba(255,255,255,0.8);
       border-radius: 16px;
       margin-bottom: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #5a2d3a;
-      cursor: pointer;
-      transition: all 0.2s;
+      font-size: 16px; font-weight: 600; color: #5a2d3a;
+      cursor: pointer; transition: all 0.2s;
       box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
-    .map-option:active {
-      transform: scale(0.97);
-      background: rgba(255,215,0,0.1);
-    }
-    .map-option .icon {
-      font-size: 24px;
-      width: 36px;
-      text-align: center;
-    }
+    .map-option:active { transform: scale(0.97); background: rgba(255,215,0,0.1); }
+    .map-option .icon { font-size: 24px; width: 36px; text-align: center; }
     .map-option.recommend {
       background: linear-gradient(90deg, #d92121, #d4af37);
-      color: #fff;
-      border: none;
+      color: #fff; border: none;
     }
     .map-option.recommend .icon { color: #fff; }
-    .map-option.copy-addr {
-      border-style: dashed;
-      background: rgba(255,255,255,0.3);
-    }
+    .map-option.copy-addr { border-style: dashed; background: rgba(255,255,255,0.3); }
     .cancel-map {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      background: transparent;
-      border: none;
-      font-size: 15px;
-      color: rgba(90,45,58,0.4);
-      margin-top: 10px;
-      cursor: pointer;
-      text-align: center;
+      display: block; width: 100%; padding: 14px;
+      background: transparent; border: none;
+      font-size: 15px; color: rgba(90,45,58,0.4);
+      margin-top: 10px; cursor: pointer; text-align: center;
     }
     .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.4s;
-      pointer-events: none;
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.7); color: #fff;
+      padding: 8px 20px; border-radius: 20px; font-size: 14px;
+      z-index: 1000; opacity: 0; transition: opacity 0.4s; pointer-events: none;
     }
-    .toast.show {
-      opacity: 1;
-    }
+    .toast.show { opacity: 1; }
   </style>
 </head>
 <body>
@@ -786,11 +324,8 @@
   <div class="bg-container"></div>
   <div class="glow-ball g1"></div>
   <div class="glow-ball g2"></div>
-
-  <!-- 粒子 Canvas -->
   <canvas id="particles"></canvas>
 
-  <!-- 分页点 -->
   <div class="pagination" id="pagination">
     <div class="dot active" data-index="0"></div>
     <div class="dot" data-index="1"></div>
@@ -798,16 +333,10 @@
     <div class="dot" data-index="3"></div>
     <div class="dot" data-index="4"></div>
   </div>
-
-  <!-- 自动播放按钮 -->
   <div class="auto-btn" id="autoBtn">⏸</div>
-
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- ===== 主应用 ===== -->
   <div id="app">
-
     <!-- 第1页 -->
     <section class="page" id="page0">
       <div class="page-content" style="justify-content:center;">
@@ -817,17 +346,9 @@
             <div class="main-title">WE DO</div>
           </div>
           <div class="names-container">
-            <div class="name-card" id="cardGroom">
-              <div class="role">新郎</div>
-              <div class="cn">孙卫豪</div>
-              <div class="en">SUN WEIHAO</div>
-            </div>
+            <div class="name-card" id="cardGroom"><div class="role">新郎</div><div class="cn">孙卫豪</div><div class="en">SUN WEIHAO</div></div>
             <div class="divider-xi">囍</div>
-            <div class="name-card" id="cardBride">
-              <div class="role">新娘</div>
-              <div class="cn span-2">吴 娇</div>
-              <div class="en">WU JIAO</div>
-            </div>
+            <div class="name-card" id="cardBride"><div class="role">新娘</div><div class="cn span-2">吴 娇</div><div class="en">WU JIAO</div></div>
           </div>
           <div class="cover-date">2026.10.03  /  18:08</div>
           <div class="scroll-hint"><span>向上滑动</span><div class="arrow"></div></div>
@@ -845,27 +366,15 @@
         <div class="section-sub">OUR STORY</div>
         <div class="timeline-wrapper">
           <div class="timeline">
-            <div class="node">
-              <div class="year-bg">2019</div>
-              <div class="node-date">2019.09 初见 · 惊鸿</div>
-              <div class="node-text">人海中的第一次回眸，像命运写好的底层代码，一眼万年。</div>
-            </div>
-            <div class="node">
-              <div class="year-bg">2021</div>
-              <div class="node-date">2021.05 相恋 · 同频</div>
-              <div class="node-text">确认过眼神，是频率完全契合的人，喜怒哀乐都有了共享进程。</div>
-            </div>
-            <div class="node">
-              <div class="year-bg">2023</div>
-              <div class="node-date">2023.10 求婚 · 锁定</div>
-              <div class="node-text">一枚戒指，一句誓言，锁定了彼此共赴的未来。</div>
-            </div>
+            <div class="node"><div class="year-bg">2019</div><div class="node-date">2019.09 初见 · 惊鸿</div><div class="node-text">人海中的第一次回眸，像命运写好的底层代码，一眼万年。</div></div>
+            <div class="node"><div class="year-bg">2021</div><div class="node-date">2021.05 相恋 · 同频</div><div class="node-text">确认过眼神，是频率完全契合的人，喜怒哀乐都有了共享进程。</div></div>
+            <div class="node"><div class="year-bg">2023</div><div class="node-date">2023.10 求婚 · 锁定</div><div class="node-text">一枚戒指，一句誓言，锁定了彼此共赴的未来。</div></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 第3页：9宫格 -->
+    <!-- 第3页 9宫格 -->
     <section class="page" id="page2">
       <div class="page-content">
         <div class="section-title">鎏金岁月</div>
@@ -884,19 +393,14 @@
       </div>
     </section>
 
-    <!-- ============================================================
-    第4页：光影长情 —— 添加左右透明箭头
-    ============================================================ -->
+    <!-- 第4页：光影长情 + 左右透明箭头 -->
     <section class="page" id="page3">
       <div class="page-content">
         <div class="section-title">光影长情</div>
         <div class="section-sub">GALLERY</div>
         <div class="gallery-wrapper">
-          <!-- 左箭头 -->
           <div class="arrow-btn left" id="arrowLeft">‹</div>
-          <!-- 右箭头 -->
           <div class="arrow-btn right" id="arrowRight">›</div>
-
           <div class="gallery-track-4" id="galleryTrack">
             <div class="gallery-item"><img src="https://picsum.photos/seed/b1/300/400" alt=""><div class="tag">📸 定格·婚纱</div></div>
             <div class="gallery-item"><img src="https://picsum.photos/seed/b2/300/400" alt=""><div class="tag">🌍 足迹·世界</div></div>
@@ -905,8 +409,6 @@
             <div class="gallery-item"><img src="https://picsum.photos/seed/b5/300/400" alt=""><div class="tag">🎬 电影感</div></div>
             <div class="gallery-item"><img src="https://picsum.photos/seed/b6/300/400" alt=""><div class="tag">✨ 闪耀时刻</div></div>
           </div>
-
-          <!-- 滚动指示器 -->
           <div class="scroll-dots" id="scrollDots"></div>
         </div>
       </div>
@@ -927,32 +429,22 @@
     </section>
   </div>
 
-  <!-- ===== 地图选择弹窗 ===== -->
+  <!-- 地图弹窗 -->
   <div class="modal-overlay" id="mapModal">
     <div class="modal-box">
       <div class="modal-title">选择导航方式</div>
-      <div class="map-option recommend" id="mapTencent">
-        <span class="icon">💬</span> 腾讯地图（推荐）
-      </div>
-      <div class="map-option" id="mapAmap">
-        <span class="icon">🗺️</span> 高德地图
-      </div>
-      <div class="map-option" id="mapBaidu">
-        <span class="icon">🐾</span> 百度地图
-      </div>
-      <div class="map-option" id="mapApple">
-        <span class="icon">🍎</span> 苹果地图 (iOS)
-      </div>
-      <div class="map-option copy-addr" id="copyAddress">
-        <span class="icon">📋</span> 复制地址（粘贴到地图）
-      </div>
+      <div class="map-option recommend" id="mapTencent"><span class="icon">💬</span> 腾讯地图（推荐）</div>
+      <div class="map-option" id="mapAmap"><span class="icon">🗺️</span> 高德地图</div>
+      <div class="map-option" id="mapBaidu"><span class="icon">🐾</span> 百度地图</div>
+      <div class="map-option" id="mapApple"><span class="icon">🍎</span> 苹果地图 (iOS)</div>
+      <div class="map-option copy-addr" id="copyAddress"><span class="icon">📋</span> 复制地址（粘贴到地图）</div>
       <button class="cancel-map" id="closeMapModal">取消</button>
     </div>
   </div>
 
   <script>
     // ============================================================
-    // 1. 粒子系统
+    // 1. 粒子系统（保持不变）
     // ============================================================
     (function() {
       const canvas = document.getElementById('particles');
@@ -960,287 +452,104 @@
       let w, h;
       const particles = [];
       const COUNT = 100;
-
-      function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      }
+      function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
       window.addEventListener('resize', resize);
       resize();
-
       class Particle {
         constructor() { this.reset(); }
-        reset() {
-          this.x = Math.random() * w;
-          this.y = Math.random() * h;
-          this.size = Math.random() * 3 + 0.5;
-          this.speedX = (Math.random() - 0.5) * 0.3;
-          this.speedY = (Math.random() - 0.5) * 0.3;
-          this.opacity = Math.random() * 0.6 + 0.2;
-          this.color = Math.random() > 0.6 ? '212, 175, 55' : '255, 182, 193';
-          this.pulse = Math.random() * Math.PI * 2;
-        }
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x < 0 || this.x > w) this.speedX *= -1;
-          if (this.y < 0 || this.y > h) this.speedY *= -1;
-          this.pulse += 0.02;
-        }
-        draw() {
-          const glow = Math.sin(this.pulse) * 0.2 + 0.8;
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size * glow, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${this.color}, ${this.opacity * glow})`;
-          ctx.shadowColor = `rgba(212, 175, 55, 0.2)`;
-          ctx.shadowBlur = 15;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
+        reset() { this.x = Math.random()*w; this.y = Math.random()*h; this.size = Math.random()*3+0.5; this.speedX = (Math.random()-0.5)*0.3; this.speedY = (Math.random()-0.5)*0.3; this.opacity = Math.random()*0.6+0.2; this.color = Math.random()>0.6 ? '212,175,55' : '255,182,193'; this.pulse = Math.random()*Math.PI*2; }
+        update() { this.x += this.speedX; this.y += this.speedY; if (this.x<0||this.x>w) this.speedX*=-1; if (this.y<0||this.y>h) this.speedY*=-1; this.pulse += 0.02; }
+        draw() { const glow = Math.sin(this.pulse)*0.2+0.8; ctx.beginPath(); ctx.arc(this.x, this.y, this.size*glow, 0, Math.PI*2); ctx.fillStyle = `rgba(${this.color}, ${this.opacity*glow})`; ctx.shadowColor = 'rgba(212,175,55,0.2)'; ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0; }
       }
-      for (let i = 0; i < COUNT; i++) particles.push(new Particle());
-
+      for (let i=0; i<COUNT; i++) particles.push(new Particle());
       function drawLines() {
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 110) {
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.strokeStyle = `rgba(212, 175, 55, ${0.06 * (1 - dist / 110)})`;
-              ctx.lineWidth = 0.6;
-              ctx.stroke();
-            }
+        for (let i=0; i<particles.length; i++) {
+          for (let j=i+1; j<particles.length; j++) {
+            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 110) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.strokeStyle = `rgba(212,175,55,${0.06*(1-dist/110)})`; ctx.lineWidth = 0.6; ctx.stroke(); }
           }
         }
       }
-      function animate() {
-        ctx.clearRect(0, 0, w, h);
-        particles.forEach(p => { p.update(); p.draw(); });
-        drawLines();
-        requestAnimationFrame(animate);
-      }
+      function animate() { ctx.clearRect(0,0,w,h); particles.forEach(p=>{p.update(); p.draw();}); drawLines(); requestAnimationFrame(animate); }
       animate();
     })();
 
     // ============================================================
-    // 2. 3D 视差
+    // 2. 3D视差（保持不变）
     // ============================================================
     (function() {
       const cover = document.getElementById('cover3d');
       const card3d = document.getElementById('card3d');
       const cards = document.querySelectorAll('.name-card');
-
-      function applyTilt(element, x, y) {
-        if (!element) return;
-        const rect = element.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const deltaX = (x - centerX) / rect.width;
-        const deltaY = (y - centerY) / rect.height;
-        const rotateX = deltaY * -12;
-        const rotateY = deltaX * 12;
-        element.style.transform =
-          `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-      }
-      function resetTilt(element) {
-        if (!element) return;
-        element.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-      }
-      document.addEventListener('mousemove', (e) => {
-        const x = e.clientX, y = e.clientY;
-        applyTilt(cover, x, y);
-        applyTilt(card3d, x, y);
-        cards.forEach(c => applyTilt(c, x, y));
-      });
-      document.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          const x = e.touches[0].clientX, y = e.touches[0].clientY;
-          applyTilt(cover, x, y);
-          applyTilt(card3d, x, y);
-          cards.forEach(c => applyTilt(c, x, y));
-        }
-      }, { passive: true });
-      document.addEventListener('mouseleave', () => {
-        resetTilt(cover);
-        resetTilt(card3d);
-        cards.forEach(c => resetTilt(c));
-      });
+      function applyTilt(element, x, y) { if (!element) return; const rect = element.getBoundingClientRect(); const centerX = rect.left + rect.width/2; const centerY = rect.top + rect.height/2; const deltaX = (x - centerX)/rect.width; const deltaY = (y - centerY)/rect.height; const rotateX = deltaY * -12; const rotateY = deltaX * 12; element.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`; }
+      function resetTilt(element) { if (!element) return; element.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)'; }
+      document.addEventListener('mousemove', (e) => { const x=e.clientX, y=e.clientY; applyTilt(cover,x,y); applyTilt(card3d,x,y); cards.forEach(c=>applyTilt(c,x,y)); });
+      document.addEventListener('touchmove', (e) => { if (e.touches.length>0) { const x=e.touches[0].clientX, y=e.touches[0].clientY; applyTilt(cover,x,y); applyTilt(card3d,x,y); cards.forEach(c=>applyTilt(c,x,y)); } }, { passive: true });
+      document.addEventListener('mouseleave', () => { resetTilt(cover); resetTilt(card3d); cards.forEach(c=>resetTilt(c)); });
     })();
 
     // ============================================================
-    // 3. 滑动引擎
+    // 3. 滑动引擎（保持不变）
     // ============================================================
     const app = document.getElementById('app');
     const pages = document.querySelectorAll('.page');
     const dots = document.querySelectorAll('.dot');
-    let currentIndex = 0;
-    let isAnimating = false;
-    let startY = 0;
-    let isSwiping = false;
-
+    let currentIndex = 0, isAnimating = false, startY = 0, isSwiping = false;
     function getScreenHeight() { return window.innerHeight; }
-    function initLayout() {
-      const h = getScreenHeight();
-      app.style.height = (h * pages.length) + 'px';
-      pages.forEach(page => page.style.height = h + 'px');
-      goToPage(currentIndex, false);
-    }
-    initLayout();
-    window.addEventListener('resize', initLayout);
-
+    function initLayout() { const h = getScreenHeight(); app.style.height = (h * pages.length) + 'px'; pages.forEach(p=>p.style.height = h + 'px'); goToPage(currentIndex, false); }
+    initLayout(); window.addEventListener('resize', initLayout);
     function goToPage(index, animate = true) {
-      if (index < 0) index = 0;
-      if (index >= pages.length) index = pages.length - 1;
+      if (index < 0) index = 0; if (index >= pages.length) index = pages.length - 1;
       currentIndex = index;
       const translateY = -currentIndex * getScreenHeight();
-      app.style.transition = animate ? 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)' : 'none';
+      app.style.transition = animate ? 'transform 0.5s cubic-bezier(0.23,1,0.32,1)' : 'none';
       app.style.transform = `translate3d(0, ${translateY}px, 0)`;
-      if (animate) {
-        isAnimating = true;
-        setTimeout(() => { isAnimating = false; }, 500);
-      }
+      if (animate) { isAnimating = true; setTimeout(() => { isAnimating = false; }, 500); }
       dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
     }
-
-    // 触摸事件
     function onTouchStart(e) {
-      if (isAnimating) return;
-      const touch = e.touches[0];
-      startY = touch.clientY;
-      const currentPage = pages[currentIndex];
-      const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
-      if (isScrollable) {
-        const atTop = currentPage.scrollTop === 0;
-        const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1;
-        if (atTop || atBottom) isSwiping = true;
-        else isSwiping = false;
-      } else {
-        isSwiping = true;
-      }
-      if (isSwiping) {
-        e.preventDefault();
-        app.style.transition = 'none';
-      }
+      if (isAnimating) return; const touch = e.touches[0]; startY = touch.clientY;
+      const currentPage = pages[currentIndex]; const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
+      if (isScrollable) { const atTop = currentPage.scrollTop === 0; const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1; if (atTop || atBottom) isSwiping = true; else isSwiping = false; } else { isSwiping = true; }
+      if (isSwiping) { e.preventDefault(); app.style.transition = 'none'; }
     }
     function onTouchMove(e) {
-      if (isAnimating || !isSwiping) return;
-      const touch = e.touches[0];
-      const diff = touch.clientY - startY;
-      const currentPage = pages[currentIndex];
-      const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
-      if (isScrollable) {
-        const atTop = currentPage.scrollTop === 0;
-        const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1;
-        if ((atTop && diff > 0) || (atBottom && diff < 0)) {
-          e.preventDefault();
-        } else {
-          return;
-        }
-      } else {
-        e.preventDefault();
-      }
-      let finalDiff = diff;
-      if ((currentIndex === 0 && diff > 0) || (currentIndex === pages.length - 1 && diff < 0)) {
-        finalDiff = diff * 0.3;
-      }
-      const translateY = -currentIndex * getScreenHeight() + finalDiff;
-      app.style.transform = `translate3d(0, ${translateY}px, 0)`;
+      if (isAnimating || !isSwiping) return; const touch = e.touches[0]; const diff = touch.clientY - startY;
+      const currentPage = pages[currentIndex]; const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
+      if (isScrollable) { const atTop = currentPage.scrollTop === 0; const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1; if ((atTop && diff > 0) || (atBottom && diff < 0)) { e.preventDefault(); } else { return; } } else { e.preventDefault(); }
+      let finalDiff = diff; if ((currentIndex === 0 && diff > 0) || (currentIndex === pages.length - 1 && diff < 0)) { finalDiff = diff * 0.3; }
+      const translateY = -currentIndex * getScreenHeight() + finalDiff; app.style.transform = `translate3d(0, ${translateY}px, 0)`;
     }
     function onTouchEnd(e) {
-      if (isAnimating || !isSwiping) return;
-      const touch = e.changedTouches[0];
-      const diff = touch.clientY - startY;
-      const threshold = getScreenHeight() * 0.15;
-      let nextPage = currentIndex;
-      if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1;
-      else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
+      if (isAnimating || !isSwiping) return; const touch = e.changedTouches[0]; const diff = touch.clientY - startY; const threshold = getScreenHeight() * 0.15;
+      let nextPage = currentIndex; if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1; else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
       goToPage(nextPage, true);
     }
     app.addEventListener('touchstart', onTouchStart, { passive: false });
     app.addEventListener('touchmove', onTouchMove, { passive: false });
     app.addEventListener('touchend', onTouchEnd, { passive: true });
 
-    // 鼠标支持
     let mouseDown = false, mouseStartY = 0;
-    app.addEventListener('mousedown', (e) => {
-      if (isAnimating) return;
-      mouseDown = true;
-      mouseStartY = e.clientY;
-      const currentPage = pages[currentIndex];
-      const isScrollable = currentPage.scrollHeight > currentPage.clientHeight;
-      if (isScrollable) {
-        const atTop = currentPage.scrollTop === 0;
-        const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1;
-        if (atTop || atBottom) isSwiping = true;
-        else isSwiping = false;
-      } else {
-        isSwiping = true;
-      }
-      if (isSwiping) app.style.transition = 'none';
-    });
-    app.addEventListener('mousemove', (e) => {
-      if (!mouseDown || isAnimating || !isSwiping) return;
-      const diff = e.clientY - mouseStartY;
-      const translateY = -currentIndex * getScreenHeight() + diff;
-      app.style.transform = `translate3d(0, ${translateY}px, 0)`;
-    });
-    app.addEventListener('mouseup', (e) => {
-      if (!mouseDown || !isSwiping) return;
-      mouseDown = false;
-      const diff = e.clientY - mouseStartY;
-      const threshold = getScreenHeight() * 0.15;
-      let nextPage = currentIndex;
-      if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1;
-      else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1;
-      goToPage(nextPage, true);
-    });
-    app.addEventListener('mouseleave', () => {
-      if (mouseDown) { mouseDown = false; goToPage(currentIndex, true); }
-    });
+    app.addEventListener('mousedown', (e) => { if (isAnimating) return; mouseDown = true; mouseStartY = e.clientY; const currentPage = pages[currentIndex]; const isScrollable = currentPage.scrollHeight > currentPage.clientHeight; if (isScrollable) { const atTop = currentPage.scrollTop === 0; const atBottom = currentPage.scrollTop + currentPage.clientHeight >= currentPage.scrollHeight - 1; if (atTop || atBottom) isSwiping = true; else isSwiping = false; } else { isSwiping = true; } if (isSwiping) app.style.transition = 'none'; });
+    app.addEventListener('mousemove', (e) => { if (!mouseDown || isAnimating || !isSwiping) return; const diff = e.clientY - mouseStartY; const translateY = -currentIndex * getScreenHeight() + diff; app.style.transform = `translate3d(0, ${translateY}px, 0)`; });
+    app.addEventListener('mouseup', (e) => { if (!mouseDown || !isSwiping) return; mouseDown = false; const diff = e.clientY - mouseStartY; const threshold = getScreenHeight() * 0.15; let nextPage = currentIndex; if (diff < -threshold && currentIndex < pages.length - 1) nextPage = currentIndex + 1; else if (diff > threshold && currentIndex > 0) nextPage = currentIndex - 1; goToPage(nextPage, true); });
+    app.addEventListener('mouseleave', () => { if (mouseDown) { mouseDown = false; goToPage(currentIndex, true); } });
 
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        if (isAnimating) return;
-        const index = parseInt(dot.dataset.index);
-        goToPage(index, true);
-        pauseAuto();
-      });
-    });
+    dots.forEach(dot => { dot.addEventListener('click', () => { if (isAnimating) return; const index = parseInt(dot.dataset.index); goToPage(index, true); pauseAuto(); }); });
 
     // ============================================================
     // 4. 自动播放（3秒）
     // ============================================================
-    let autoTimer = null;
-    let isAutoPlaying = true;
+    let autoTimer = null, isAutoPlaying = true;
     const autoBtn = document.getElementById('autoBtn');
     const AUTO_INTERVAL = 3000;
-
-    function startAuto() {
-      isAutoPlaying = true;
-      autoBtn.textContent = '⏸';
-      clearInterval(autoTimer);
-      autoTimer = setInterval(() => {
-        if (currentIndex < pages.length - 1) goToPage(currentIndex + 1, true);
-        else pauseAuto();
-      }, AUTO_INTERVAL);
-    }
-    function pauseAuto() {
-      isAutoPlaying = false;
-      autoBtn.textContent = '▶';
-      clearInterval(autoTimer);
-    }
-    autoBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      isAutoPlaying ? pauseAuto() : startAuto();
-    });
+    function startAuto() { isAutoPlaying = true; autoBtn.textContent = '⏸'; clearInterval(autoTimer); autoTimer = setInterval(() => { if (currentIndex < pages.length - 1) goToPage(currentIndex + 1, true); else pauseAuto(); }, AUTO_INTERVAL); }
+    function pauseAuto() { isAutoPlaying = false; autoBtn.textContent = '▶'; clearInterval(autoTimer); }
+    autoBtn.addEventListener('click', (e) => { e.stopPropagation(); isAutoPlaying ? pauseAuto() : startAuto(); });
     startAuto();
 
     // ============================================================
-    // 5. 第四页横向滚动 + 箭头控制 + 指示器
+    // 5. 第四页横向滚动 + 箭头控制（修复）
     // ============================================================
     (function() {
       const track = document.getElementById('galleryTrack');
@@ -1248,7 +557,7 @@
       const items = track.querySelectorAll('.gallery-item');
       const total = items.length;
 
-      // 生成指示器小圆点
+      // 生成小圆点
       for (let i = 0; i < total; i++) {
         const dot = document.createElement('span');
         if (i === 0) dot.classList.add('active');
@@ -1256,7 +565,7 @@
       }
       const dotElements = dotsContainer.querySelectorAll('span');
 
-      // 更新指示器高亮
+      // 更新指示器
       function updateDots() {
         const scrollLeft = track.scrollLeft;
         const itemWidth = items[0].offsetWidth + 15;
@@ -1268,99 +577,103 @@
 
       track.addEventListener('scroll', updateDots);
 
-      // 点击指示器跳转
+      // 点击小圆点跳转
       dotElements.forEach((dot, i) => {
         dot.addEventListener('click', function() {
           const itemWidth = items[0].offsetWidth + 15;
           track.scrollTo({ left: i * itemWidth, behavior: 'smooth' });
+          pauseAuto();
         });
       });
 
-      // 左右箭头点击事件
+      // 左右箭头（关键修复）
       const arrowLeft = document.getElementById('arrowLeft');
       const arrowRight = document.getElementById('arrowRight');
 
-      function scrollBy(direction) {
+      function scrollGallery(direction) {
         const itemWidth = items[0].offsetWidth + 15;
         const currentScroll = track.scrollLeft;
         const maxScroll = track.scrollWidth - track.clientWidth;
         let target = currentScroll + direction * itemWidth;
-        if (target < 0) target = 0;
-        if (target > maxScroll) target = maxScroll;
+        target = Math.max(0, Math.min(target, maxScroll));
         track.scrollTo({ left: target, behavior: 'smooth' });
+        pauseAuto(); // 手动操作时暂停自动播放
       }
 
-      arrowLeft.addEventListener('click', (e) => {
+      // 绑定点击事件（使用 click，并阻止冒泡）
+      arrowLeft.addEventListener('click', function(e) {
         e.stopPropagation();
-        scrollBy(-1);
-        pauseAuto(); // 用户操作时暂停自动播放
-      });
-      arrowRight.addEventListener('click', (e) => {
-        e.stopPropagation();
-        scrollBy(1);
-        pauseAuto();
+        scrollGallery(-1);
       });
 
-      // 当滚动停止后更新指示器（防抖）
+      arrowRight.addEventListener('click', function(e) {
+        e.stopPropagation();
+        scrollGallery(1);
+      });
+
+      // 触摸滑动时也更新指示器
       let scrollTimeout;
       track.addEventListener('scroll', function() {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(updateDots, 150);
       });
 
-      // 窗口大小改变时重新计算（保证指示器准确）
+      // 窗口改变时重新计算
       window.addEventListener('resize', updateDots);
     })();
 
     // ============================================================
-    // 6. 导航弹窗
+    // 6. 导航弹窗（修复：使用 location.href 代替 window.open）
     // ============================================================
     const navBtn = document.getElementById('navBtn');
     const mapModal = document.getElementById('mapModal');
 
-    navBtn.addEventListener('click', () => {
+    navBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       mapModal.classList.add('active');
       pauseAuto();
     });
 
-    document.getElementById('closeMapModal').addEventListener('click', () => {
+    document.getElementById('closeMapModal').addEventListener('click', function() {
       mapModal.classList.remove('active');
     });
-    mapModal.addEventListener('click', (e) => {
+
+    mapModal.addEventListener('click', function(e) {
       if (e.target === mapModal) mapModal.classList.remove('active');
     });
 
-    const LAT = 27.721203;
-    const LNG = 111.247284;
-    const NAME = '棘树下';
-    const FULL_ADDR = '新化县上梅街道 · 棘树下';
+    // 地址信息（请替换）
+    const LAT = 30.2741;
+    const LNG = 120.1551;
+    const NAME = '杭州瑰丽酒店';
+    const FULL_ADDR = '杭州市西湖区 · 瑰丽酒店 三层玫瑰宴会厅';
 
+    // 改用 location.href 直接跳转，避免微信拦截
     function openMap(url) {
-      window.open(url, '_blank');
+      window.location.href = url;
       mapModal.classList.remove('active');
     }
 
-    document.getElementById('mapTencent').addEventListener('click', () => {
+    document.getElementById('mapTencent').addEventListener('click', function() {
       openMap(`https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=${encodeURIComponent(NAME)}&tocoord=${LAT},${LNG}&referer=Wedding`);
     });
-    document.getElementById('mapAmap').addEventListener('click', () => {
+    document.getElementById('mapAmap').addEventListener('click', function() {
       openMap(`https://uri.amap.com/navigation?to=${LNG},${LAT},${encodeURIComponent(NAME)}&mode=car&coordinate=gaode&callnative=1`);
     });
-    document.getElementById('mapBaidu').addEventListener('click', () => {
+    document.getElementById('mapBaidu').addEventListener('click', function() {
       openMap(`https://api.map.baidu.com/direction?destination=latlng:${LAT},${LNG}|name:${encodeURIComponent(NAME)}&mode=driving&output=html`);
     });
-    document.getElementById('mapApple').addEventListener('click', () => {
+    document.getElementById('mapApple').addEventListener('click', function() {
       openMap(`http://maps.apple.com/?ll=${LAT},${LNG}&q=${encodeURIComponent(NAME)}`);
     });
 
+    // 复制地址
     document.getElementById('copyAddress').addEventListener('click', function() {
       const text = `${NAME}, ${FULL_ADDR}`;
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
           showToast('✅ 地址已复制，请打开地图APP粘贴搜索');
-        }).catch(() => {
-          fallbackCopy(text);
-        });
+        }).catch(() => { fallbackCopy(text); });
       } else {
         fallbackCopy(text);
       }
@@ -1391,5 +704,6 @@
       }, 2500);
     }
   </script>
+
 </body>
 </html>
