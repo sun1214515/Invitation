@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>全息玫瑰金 · 我们的婚礼请柬</title>
+<style>
+  :root {
+    --bg-light: #fff5f7;
+    --bg-rose: #f8c8d8;
+    --primary-red: #d92121;
+    --deep-red: #8b0000;
+    --accent-gold: #d4af37;
+    --light-gold: #f9d976;
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.8);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  /* 【核心修复 1】从 CSS 底层禁用浏览器默认手势，防止微信下拉刷新干扰 */
+  html, body {
+    height: 100%; width: 100%; margin: 0; padding: 0;
+    overflow: hidden; 
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(160deg, #fff5f7 0%, #ffe4e1 40%, #f8c8d8 100%);
+    color: var(--deep-red);
+    touch-action: none; /* 关键：告诉浏览器不要处理任何原生触摸手势 */
+    overscroll-behavior: none; /* 关键：禁用链式滚动和橡皮筋效果 */
+    -webkit-overflow-scrolling: auto; 
+  }
+
+  /* 婚礼现场氛围背景系统 (保持不变) */
+  .spotlight { position: fixed; top: -20%; width: 50%; height: 140%; background: linear-gradient(180deg, rgba(255, 223, 150, 0.25) 0%, transparent 80%); filter: blur(60px); transform-origin: top center; pointer-events: none; z-index: 0; }
+  .spotlight.left { left: 0%; animation: sweepLeft 12s ease-in-out infinite alternate; }
+  .spotlight.right { right: 0%; animation: sweepRight 14s ease-in-out infinite alternate; }
+  @keyframes sweepLeft { 0% { transform: rotate(-10deg); } 100% { transform: rotate(20deg); } }
+  @keyframes sweepRight { 0% { transform: rotate(10deg); } 100% { transform: rotate(-20deg); } }
+
+  .bokeh-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+  .bokeh { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,215,0,0.3) 40%, transparent 70%); filter: blur(8px); animation: floatBokeh 20s infinite ease-in-out; }
+  @keyframes floatBokeh { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; } 50% { transform: translate(30px, -40px) scale(1.2); opacity: 0.9; } }
+
+  .petals-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; overflow: hidden; }
+  .petal { position: absolute; width: 16px; height: 16px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ffd1ff 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 12px rgba(255, 154, 158, 0.6); animation: fall linear infinite; opacity: 0; }
+  @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.9; } 100% { transform: translateY(110vh) rotate(720deg) scale(1.2); opacity: 0; } }
+
+  /* 【核心修复 2】使用 window.innerHeight 动态计算，彻底抛弃 100vh */
+  #app {
+    width: 100%; 
+    position: relative; z-index: 10;
+    /* 注意：这里不再写死 height，由 JS 动态控制 */
+    touch-action: none; 
+  }
+  
+  .page {
+    width: 100%; 
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 40px 20px; position: relative; 
+    overflow: hidden; /* 确保单页内部绝对不产生滚动条 */
+    max-height: 100%; /* 防止内容撑破容器 */
+  }
+
+  /* 以下为样式代码，与上一版完全相同，为节省篇幅做了紧凑处理 */
+  .title { font-size: 26px; font-weight: 900; letter-spacing: 6px; background: linear-gradient(180deg, var(--primary-red) 0%, var(--accent-gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; text-align: center; filter: drop-shadow(0 2px 4px rgba(139, 0, 0, 0.2)); }
+  .subtitle { font-size: 12px; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 30px; opacity: 0.8; text-align: center; font-family: monospace; font-weight: bold; }
+  .names-container { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 40px; position: relative; }
+  .name-col { display: flex; flex-direction: column; align-items: center; position: relative; padding: 15px 20px; background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 12px; box-shadow: 0 8px 32px rgba(139, 0, 0, 0.1); }
+  .name-role { font-size: 11px; color: var(--accent-gold); letter-spacing: 3px; margin-bottom: 10px; font-weight: bold; }
+  .name-cn { font-size: 32px; font-weight: 900; color: var(--deep-red); writing-mode: vertical-rl; letter-spacing: 8px; text-shadow: 0 2px 4px rgba(139, 0, 0, 0.2); }
+  .name-en { font-size: 10px; color: rgba(139, 0, 0, 0.5); letter-spacing: 2px; margin-top: 10px; font-family: monospace; }
+  .center-xi { font-size: 50px; font-weight: bold; color: var(--primary-red); text-shadow: 0 0 20px rgba(217, 33, 33, 0.4), 0 4px 8px rgba(139, 0, 0, 0.3); animation: pulse-glow 2.5s infinite alternate; position: relative; }
+  .center-xi::before { content: ""; position: absolute; top: 50%; left: 50%; width: 80px; height: 80px; transform: translate(-50%, -50%); border: 2px dashed rgba(212, 175, 55, 0.6); border-radius: 50%; animation: spin 15s linear infinite; }
+  @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+  @keyframes pulse-glow { 0% { text-shadow: 0 0 10px rgba(217, 33, 33, 0.3), 0 4px 8px rgba(139, 0, 0, 0.3); filter: brightness(1); } 100% { text-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 4px 8px rgba(139, 0, 0, 0.3); filter: brightness(1.1); } }
+  .cover-date { font-size: 14px; color: var(--deep-red); letter-spacing: 3px; font-family: monospace; margin-top: 10px; border-top: 1px solid rgba(212, 175, 55, 0.5); padding-top: 15px; font-weight: bold; }
+  .timeline { width: 100%; max-width: 350px; position: relative; padding-left: 30px; }
+  .timeline::before { content: ""; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent-gold), var(--primary-red), transparent); }
+  .node { margin-bottom: 35px; position: relative; }
+  .node::before { content: ""; position: absolute; left: -25px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--primary-red); box-shadow: 0 0 10px rgba(217, 33, 33, 0.4); }
+  .node-date { font-size: 13px; color: var(--primary-red); font-family: monospace; margin-bottom: 6px; font-weight: bold;}
+  .node-text { font-size: 14px; line-height: 1.6; color: #553333; }
+  .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 360px; }
+  .photo-item { aspect-ratio: 1/1; background: #fff; position: relative; overflow: hidden; border-radius: 8px; padding: 4px; box-shadow: 0 8px 20px rgba(139, 0, 0, 0.15); transition: all 0.3s ease; }
+  .photo-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+  .photo-item::after { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%); animation: shimmer 4s infinite; pointer-events: none; }
+  @keyframes shimmer { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
+  .gallery-track { display: flex; gap: 15px; width: 100%; overflow-x: auto; padding: 20px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; touch-action: pan-x; /* 允许横向画廊左右滑动 */ }
+  .gallery-track::-webkit-scrollbar { display: none; }
+  .gallery-item { flex: 0 0 240px; height: 320px; background: #fff; border-radius: 12px; scroll-snap-align: center; position: relative; box-shadow: 0 15px 35px rgba(139, 0, 0, 0.2); overflow: hidden; padding: 6px; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+  .gallery-item .tag { position: absolute; bottom: 20px; left: 20px; z-index: 2; background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--deep-red); font-size: 13px; font-weight: bold; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .invite-card { width: 100%; max-width: 350px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px 25px; position: relative; box-shadow: 0 15px 40px rgba(139, 0, 0, 0.15); }
+  .info-row { display: flex; margin-bottom: 25px; align-items: flex-start; }
+  .info-icon { width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, var(--primary-red), #ff6b6b); border-radius: 50%; color: #fff; font-size: 16px; margin-right: 15px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(217, 33, 33, 0.3); }
+  .info-content { flex: 1; }
+  .info-label { font-size: 12px; color: var(--accent-gold); margin-bottom: 5px; letter-spacing: 2px; font-weight: bold; }
+  .info-value { font-size: 16px; font-weight: bold; color: var(--deep-red); line-height: 1.5; }
+  .map-placeholder { width: 100%; height: 130px; background: rgba(255,255,255,0.6); border: 1px dashed rgba(212, 175, 55, 0.5); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: rgba(139, 0, 0, 0.5); font-size: 13px; margin-bottom: 25px; position: relative; overflow: hidden; }
+  .nav-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, var(--primary-red), #ff4d4d); border: none; border-radius: 25px; color: #fff; font-size: 16px; font-weight: bold; letter-spacing: 4px; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 20px rgba(217, 33, 33, 0.4); }
+  .nav-btn:active { transform: scale(0.98); filter: brightness(1.1); }
+  .scroll-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; color: var(--primary-red); font-size: 12px; opacity: 0.6; animation: bounce 2s infinite; }
+  .scroll-hint .arrow { width: 15px; height: 15px; border-right: 2px solid var(--primary-red); border-bottom: 2px solid var(--primary-red); transform: rotate(45deg); margin-top: 5px; }
+  @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+  .pagination { position: fixed; right: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 100; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(139, 0, 0, 0.2); transition: all 0.3s; cursor: pointer;}
+  .dot.active { background: var(--primary-red); box-shadow: 0 0 10px rgba(217, 33, 33, 0.6); transform: scale(1.8); }
+</style>
+</head>
+<body>
+
+<div class="spotlight left"></div>
+<div class="spotlight right"></div>
+<div class="bokeh-container" id="bokeh"></div>
+<div class="petals-container" id="petals"></div>
+
+<div class="pagination">
+  <div class="dot active" data-index="0"></div>
+  <div class="dot" data-index="1"></div>
+  <div class="dot" data-index="2"></div>
+  <div class="dot" data-index="3"></div>
+  <div class="dot" data-index="4"></div>
+</div>
+
+<div id="app">
+  <section class="page" id="page1">
+    <div class="names-container">
+      <div class="name-col"><span class="name-role">GROOM / 新郎</span><span class="name-cn">张无忌</span><span class="name-en">ZHANG</span></div>
+      <div class="center-xi">囍</div>
+      <div class="name-col"><span class="name-role">BRIDE / 新娘</span><span class="name-cn">赵敏敏</span><span class="name-en">ZHAO</span></div>
+    </div>
+    <div class="title">我们结婚啦</div>
+    <div class="cover-date">2024.10.01 | WEDDING DAY</div>
+    <div class="scroll-hint"><span>向上滑动 开启喜悦</span><div class="arrow"></div></div>
+  </section>
+
+  <section class="page" id="page2">
+    <div class="title">时光长卷</div>
+    <div class="subtitle">OUR LOVE STORY</div>
+    <div class="timeline">
+      <div class="node"><div class="node-date">2019.09 初见·惊鸿</div><div class="node-text">人海中的第一次相遇，像是命运写好的底层代码，一眼万年。</div></div>
+      <div class="node"><div class="node-date">2021.05 相恋·同频</div><div class="node-text">确认过眼神，是频率完全契合的人。从此，我的喜怒哀乐都有了回音。</div></div>
+      <div class="node"><div class="node-date">2023.10 求婚·锁定</div><div class="node-text">一枚戒指，一句誓言。在亲友的见证下，我们锁定了彼此的未来。</div></div>
+    </div>
+  </section>
+
+  <section class="page" id="page3">
+    <div class="title">鎏金岁月</div>
+    <div class="subtitle">SWEET MOMENTS</div>
+    <div class="photo-grid">
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=21" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=22" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=23" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=24" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=25" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=26" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=27" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=28" alt=""></div>
+      <div class="photo-item"><img src="https://picsum.photos/200/200?random=29" alt=""></div>
+    </div>
+  </section>
+
+  <section class="page" id="page4">
+    <div class="title">光影长情</div>
+    <div class="subtitle">SWIPE LEFT FOR MORE</div>
+    <div class="gallery-track">
+      <div class="gallery-item"><img src="https://picsum.photos/300/400?random=30" alt=""><div class="tag">定格 · 婚纱照</div></div>
+      <div class="gallery-item"><img src="https://picsum.photos/300/400?random=31" alt=""><div class="tag">足迹 · 看世界</div></div>
+      <div class="gallery-item"><img src="https://picsum.photos/300/400?random=32" alt=""><div class="tag">日常 · 烟火气</div></div>
+      <div class="gallery-item"><img src="https://picsum.photos/300/400?random=33" alt=""><div class="tag">承诺 · 戴戒指</div></div>
+    </div>
+  </section>
+
+  <section class="page" id="page5">
+    <div class="title">喜宴坐标</div>
+    <div class="subtitle">INVITATION</div>
+    <div class="invite-card">
+      <div class="info-row"><div class="info-icon">📅</div><div class="info-content"><div class="info-label">吉时 / TIME</div><div class="info-value">2024年10月1日 (周二)<br>农历 八月廿七 18:08</div></div></div>
+      <div class="info-row"><div class="info-icon">📍</div><div class="info-content"><div class="info-label">福地 / LOCATION</div><div class="info-value">北京市朝阳区 · 璞瑄大酒店<br>二层 大宴会厅</div></div></div>
+      <div class="map-placeholder">[ 此处替换为真实地图截图 ]</div>
+      <button class="nav-btn" onclick="alert('在微信环境中，此处将调用微信 JS-SDK 打开内置地图导航')">🧭 一键导航赴宴</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  // 1. 生成背景特效
+  const bokehContainer = document.getElementById('bokeh');
+  for (let i = 0; i < 15; i++) {
+    const b = document.createElement('div'); b.className = 'bokeh';
+    b.style.left = Math.random() * 100 + '%'; b.style.top = Math.random() * 100 + '%';
+    const size = Math.random() * 80 + 40; b.style.width = size + 'px'; b.style.height = size + 'px';
+    b.style.animationDuration = (Math.random() * 10 + 15) + 's'; b.style.animationDelay = (Math.random() * 5) + 's';
+    bokehContainer.appendChild(b);
+  }
+  const petalsContainer = document.getElementById('petals');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div'); p.className = 'petal';
+    p.style.left = Math.random() * 100 + '%'; p.style.animationDuration = (Math.random() * 8 + 6) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    const scale = Math.random() * 0.8 + 0.6; p.style.transform = `scale(${scale})`;
+    petalsContainer.appendChild(p);
+  }
+
+  // 2. 【核心修复 3】商业级跟手拖拽滑动引擎
+  const app = document.getElementById('app');
+  const pages = document.querySelectorAll('.page');
+  const dots = document.querySelectorAll('.dot');
+  
+  let currentIndex = 0;
+  let isAnimating = false;
+  let startY = 0;
+  let currentTranslateY = 0;
+  let isDragging = false;
+
+  // 动态获取真实屏幕高度 (解决 100vh bug)
+  function getScreenHeight() { return window.innerHeight; }
+
+  // 初始化高度
+  function initLayout() {
+    const h = getScreenHeight();
+    app.style.height = (h * pages.length) + 'px';
+    pages.forEach(page => page.style.height = h + 'px');
+    app.style.transform = `translateY(${-currentIndex * h}px)`;
+  }
+  initLayout();
+  window.addEventListener('resize', initLayout); // 横竖屏切换时自适应
+
+  function onStart(e) {
+    if (isAnimating) return; 
+    isDragging = true;
+    startY = e.touches ? e.touches[0].clientY : e.clientY;
+    app.style.transition = 'none'; // 拖动时关闭过渡，实现“跟手”
+  }
+
+  function onMove(e) {
+    if (!isDragging || isAnimating) return;
+    const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+    let diff = currentY - startY;
+
+    // 边界阻尼效果 (第一页往下拉，或最后一页往上拉时，增加阻力)
+    if ((currentIndex === 0 && diff > 0) || (currentIndex === pages.length - 1 && diff < 0)) {
+      diff = diff * 0.3; 
+    }
+
+    currentTranslateY = -currentIndex * getScreenHeight() + diff;
+    app.style.transform = `translateY(${currentTranslateY}px)`;
+  }
+
+  function onEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+
+    const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+    const diff = endY - startY;
+    const threshold = getScreenHeight() * 0.15; // 滑动 15% 屏幕即翻页
+
+    // 恢复平滑过渡动画
+    app.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+
+    let nextPage = currentIndex;
+    if (diff < -threshold && currentIndex < pages.length - 1) {
+      nextPage = currentIndex + 1; // 向上滑
+    } else if (diff > threshold && currentIndex > 0) {
+      nextPage = currentIndex - 1; // 向下滑
+    }
+
+    // 执行翻页或回弹到原位
+    currentIndex = nextPage;
+    currentTranslateY = -currentIndex * getScreenHeight();
+    app.style.transform = `translateY(${currentTranslateY}px)`;
+
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+
+    // 动画期间锁定，防止连击卡死
+    isAnimating = true;
+    setTimeout(() => { isAnimating = false; }, 500);
+  }
+
+  // 绑定事件
+  app.addEventListener('touchstart', onStart, { passive: true });
+  app.addEventListener('touchmove', onMove, { passive: true }); // 因为 CSS 设置了 touch-action: none，这里不需要 preventDefault
+  app.addEventListener('touchend', onEnd, { passive: true });
+
+  // 鼠标事件 (电脑端预览)
+  app.addEventListener('mousedown', onStart);
+  app.addEventListener('mousemove', onMove);
+  app.addEventListener('mouseup', onEnd);
+  app.addEventListener('mouseleave', onEnd);
+
+  // 侧边圆点点击
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      if (isAnimating) return;
+      isAnimating = true;
+      currentIndex = parseInt(dot.dataset.index);
+      app.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+      app.style.transform = `translateY(${-currentIndex * getScreenHeight()}px)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+      setTimeout(() => { isAnimating = false; }, 500);
+    });
+  });
+</script>
+</body>
+</html>
